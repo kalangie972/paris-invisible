@@ -111,6 +111,23 @@
     return 'la plus proche à ' + fmtDist(nearestDist);
   };
 
+  // ---------- RADAR (plan 2D) ----------
+  // Projection "cap en haut" : ce qui est devant soi apparaît en haut du radar.
+  // Échelle en racine carrée : le proche est dilaté, le lointain compressé.
+  const radarPoint = (bearing, heading, dist, range, radius) => {
+    const rel = (((bearing - heading) % 360) + 360) % 360;
+    const a = rel * Math.PI / 180;
+    const clamped = dist > range;
+    const r = radius * Math.sqrt(Math.min(dist, range) / range);
+    return { x: r * Math.sin(a), y: -r * Math.cos(a), clamped };
+  };
+  // Portée "ronde" 1-2-5 englobant d (10 800 m → 20 km)
+  const niceRange = d => {
+    if (d <= 0) return 1000;
+    const p = Math.pow(10, Math.floor(Math.log10(d)));
+    for (const m of [1, 2, 5, 10]) if (m * p >= d) return m * p;
+  };
+
   const PICore = {
     haversine, bearingTo, normHeading,
     DIRS, dirIdx, bearingDir, ARROWS, arrowChar, ribbon, smoothStep,
@@ -118,7 +135,7 @@
     fmtDist, catLabel, esc,
     addVisited, progressPct,
     walkMinutes, suggestedMode, TRANSPORT_MODES, mapsDirUrl,
-    nearbyLabel,
+    nearbyLabel, radarPoint, niceRange,
   };
 
   if (typeof module !== 'undefined' && module.exports) module.exports = PICore;

@@ -159,6 +159,15 @@
   .modal-btn:active{opacity:.8}
   .modal-btn-primary{background:var(--gold);color:var(--bg)}
   .modal-dates{border-left:2px solid var(--gold)}
+  .btn-nocam{background:transparent;border:1px solid var(--border);color:var(--text);padding:10px 22px;border-radius:26px;font-family:inherit;font-size:.8rem;cursor:pointer}
+  .no-camera-privacy{font-size:.66rem;color:var(--muted);max-width:290px;text-align:center;line-height:1.55;margin-top:2px}
+  #btn-cam-back{position:absolute;top:64px;left:12px;z-index:30;background:rgba(15,15,25,.78);border:1px solid var(--border);color:var(--text);border-radius:50%;width:44px;height:44px;font-size:1.05rem;cursor:pointer;display:none;align-items:center;justify-content:center}
+  #btn-cam-back.visible{display:flex}
+  #btn-radar{position:absolute;top:64px;right:12px;z-index:30;background:rgba(15,15,25,.78);border:1px solid var(--border);color:var(--text);border-radius:50%;width:44px;height:44px;font-size:1.15rem;cursor:pointer;display:flex;align-items:center;justify-content:center}
+  #radar-view{position:absolute;inset:0;z-index:26;background:radial-gradient(ellipse at center,#12121e 0%,var(--bg) 75%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px}
+  #radar-view.hidden{display:none}
+  #radar-svg{width:min(92vw,92%,460px);aspect-ratio:1;touch-action:manipulation}
+  .radar-hint{font-size:.68rem;color:var(--muted)}
   .transport-panel{display:none;flex-direction:column;gap:8px;padding:10px 0 2px}
   .transport-panel.open{display:flex}
   .transport-label{font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
@@ -190,7 +199,7 @@
   <button class="btn-start" id="btn-start">Explorer Paris</button>
   <div class="splash-note">L'app va demander <b>position</b>, <b>caméra</b> et <b>mouvement</b> — uniquement pour afficher les histoires autour de vous. Rien n'est enregistré ni envoyé.</div>
   <div class="splash-brand" style="margin-top:18px;display:flex;flex-direction:column;align-items:center;gap:3px"><span style="font-size:.62rem;color:var(--muted);letter-spacing:.18em;text-transform:uppercase">Une création</span><span style="font-family:'Playfair Display',serif;font-size:1.05rem;font-weight:700;color:var(--gold);letter-spacing:.22em">F.L.Y</span></div>
-  <div class="splash-version">V1.11 · F.L.Y · Directions approximatives</div>
+  <div class="splash-version">V1.13 · F.L.Y · Directions approximatives</div>
 </div>
 
 <div id="app">
@@ -216,6 +225,8 @@
         <div class="no-camera-title">Mode Exploration</div>
         <div class="no-camera-text">Activez la caméra pour l'expérience AR. Les flèches directionnelles fonctionnent en permanence.</div>
         <button class="btn-allow" id="btn-camera">Activer la caméra</button>
+        <button class="btn-nocam" id="btn-nocam">Continuer sans caméra</button>
+        <div class="no-camera-privacy">🔒 Le flux caméra ne quitte jamais votre téléphone : aucune image n'est enregistrée, stockée ni envoyée. Et tout fonctionne aussi sans caméra.</div>
       </div>
       <div class="compass-ring">
         <span class="compass-dir" id="cd-l2">—</span><span class="compass-sep">·</span>
@@ -225,6 +236,12 @@
         <span class="compass-dir" id="cd-r2">—</span>
       </div>
       <div class="ar-markers" id="ar-markers"></div>
+      <button id="btn-radar" aria-label="Basculer plan / caméra">🧭</button>
+      <button id="btn-cam-back" aria-label="Réactiver la caméra">📷</button>
+      <div id="radar-view" class="hidden">
+        <svg id="radar-svg" viewBox="0 0 300 300" role="img" aria-label="Plan des lieux autour de vous"></svg>
+        <div class="radar-hint">Le plan tourne avec vous — ce qui est devant est en haut · Tapez un lieu</div>
+      </div>
       <div class="ar-disclaimer">⚠️ Directions approximatives</div>
     </div>
     <div class="direction-strip" id="direction-strip"></div>
@@ -288,7 +305,7 @@ y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
 <script>
 'use strict';
 /* ============================================================
-   PARIS INVISIBLE — V1.11
+   PARIS INVISIBLE — V1.13
    PWA stable : lissage boussole, rendu throttlé, offline-ready
    ============================================================ */
 
@@ -565,6 +582,8 @@ function smoothHeadingUpdate(raw){
 function startApp(){
   if (S.started) return; // double-tap sur le bouton = double boucle d'animation
   S.started = true;
+  try { if (localStorage.getItem(NOCAM_KEY) === '1') { S.cameraDeclined = true; } } catch(e){}
+  if (S.cameraDeclined){ $('no-camera').classList.add('hidden'); $('btn-cam-back').classList.add('visible'); }
   $('splash').classList.add('hidden');
   $('app').classList.add('visible');
   initGPS();
@@ -623,7 +642,21 @@ function updateNearbyCount(){
 }
 
 // ---------- CAMERA ----------
+const NOCAM_KEY = 'pi_nocam';
+function declineCamera(){
+  S.cameraDeclined = true;
+  try { localStorage.setItem(NOCAM_KEY, '1'); } catch(e){}
+  $('no-camera').classList.add('hidden');
+  $('btn-cam-back').classList.add('visible');
+}
+function reenableCamera(){
+  S.cameraDeclined = false;
+  try { localStorage.removeItem(NOCAM_KEY); } catch(e){}
+  $('btn-cam-back').classList.remove('visible');
+  requestCamera();
+}
 function requestCamera(){
+  if (S.cameraDeclined) return; // choix explicite de l'utilisateur — on ne redemande pas
   if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) return;
   navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'},audio:false})
     .then(stream => {
@@ -697,6 +730,7 @@ function animationLoop(ts){
   if (S.currentTab === 'ar' && ts - S.lastARRender > 100){
     updateCompass();
     renderARMarkers();
+  renderRadar();
     S.lastARRender = ts;
   }
   // Strip : rendu max 2×/s (juste les flèches)
@@ -994,6 +1028,58 @@ function maybeStartDemo(){
     }, 120);
   }, 3000);
 }
+
+// ---------- MODE PLAN (radar 2D) — core.js : radarPoint / niceRange, testés ----------
+function toggleRadar(){
+  const rv = $('radar-view');
+  const open = rv.classList.contains('hidden');
+  rv.classList.toggle('hidden', !open);
+  $('btn-radar').textContent = open ? '📷' : '🧭';
+  if (open) renderRadar(true);
+}
+let radarLast = 0;
+function renderRadar(force){
+  const rv = $('radar-view');
+  if (rv.classList.contains('hidden')) return;
+  const now = performance.now();
+  if (!force && now - radarLast < 120) return; // ~8 fps suffisent pour un plan
+  radarLast = now;
+  const sorted = poisByDist().slice(0, 8);
+  if (!sorted.length) return;
+  const range = niceRange(sorted[sorted.length - 1].dist);
+  const C0 = 150, R = 130;
+  let svg = '';
+  // Anneaux de distance (échelle racine : range/4 → mi-rayon)
+  svg += `<circle cx="${C0}" cy="${C0}" r="${R}" fill="rgba(201,168,76,.03)" stroke="rgba(201,168,76,.35)" stroke-width="1"/>`;
+  svg += `<circle cx="${C0}" cy="${C0}" r="${R/2}" fill="none" stroke="rgba(201,168,76,.2)" stroke-width="1"/>`;
+  svg += `<text x="${C0+3}" y="${C0-R/2-3}" fill="#8a8578" font-size="8">${fmtDist(range/4)}</text>`;
+  svg += `<text x="${C0+3}" y="${C0-R-3}" fill="#8a8578" font-size="8">${fmtDist(range)}</text>`;
+  // Indicateur Nord sur le bord (tourne avec le cap)
+  const n = radarPoint(0, S.smoothHeading, range, range, R + 9);
+  svg += `<text x="${(C0+n.x).toFixed(1)}" y="${(C0+n.y+3).toFixed(1)}" fill="var(--gold)" font-size="10" font-weight="700" text-anchor="middle">N</text>`;
+  // Vous, au centre (pointe vers le haut = votre direction)
+  svg += `<path d="M${C0} ${C0-7} L${C0-5} ${C0+6} L${C0+5} ${C0+6} Z" fill="var(--gold)"/>`;
+  // Les 8 lieux les plus proches
+  sorted.forEach(p => {
+    const pt = radarPoint(p.bearing, S.smoothHeading, p.dist, range, R);
+    const x = (C0 + pt.x).toFixed(1), y = (C0 + pt.y).toFixed(1);
+    svg += `<g data-id="${p.id}" style="cursor:pointer">`;
+    svg += `<circle cx="${x}" cy="${y}" r="14" fill="transparent"/>`; // zone de tap large
+    svg += `<circle cx="${x}" cy="${y}" r="4" fill="var(--gold)"/>`;
+    svg += `<text x="${x}" y="${y - 8}" fill="#f0ead8" font-size="8.5" text-anchor="middle">${p.icon} ${esc(p.name.length > 22 ? p.name.slice(0, 21) + '…' : p.name)}</text>`;
+    svg += `<text x="${x}" y="${+y + 14}" fill="#8a8578" font-size="7.5" text-anchor="middle">${fmtDist(p.dist)}</text>`;
+    svg += `</g>`;
+  });
+  $('radar-svg').innerHTML = svg;
+}
+$('btn-radar').addEventListener('click', toggleRadar);
+$('btn-nocam').addEventListener('click', declineCamera);
+$('btn-cam-back').addEventListener('click', reenableCamera);
+// Délégation : le SVG est redessiné en continu, un listener par élément mourrait aussitôt
+$('radar-svg').addEventListener('click', e => {
+  const g = e.target.closest('[data-id]');
+  if (g) openPoiById(+g.dataset.id);
+});
 
 // ---------- INSTALLATION PWA (Android : beforeinstallprompt) ----------
 window.addEventListener('beforeinstallprompt', e => {
