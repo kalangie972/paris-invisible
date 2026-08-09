@@ -104,6 +104,13 @@
       + encodeURIComponent(lat + ',' + lng) + '&travelmode=' + mode;
   };
 
+  // Libellé du compteur d'en-tête : jamais un "0" décourageant —
+  // si rien à proximité (< 5 km), on donne la distance du plus proche.
+  const nearbyLabel = (n, nearestDist) => {
+    if (n > 0) return n + ' histoire' + (n > 1 ? 's' : '') + ' autour';
+    return 'la plus proche à ' + fmtDist(nearestDist);
+  };
+
   const PICore = {
     haversine, bearingTo, normHeading,
     DIRS, dirIdx, bearingDir, ARROWS, arrowChar, ribbon, smoothStep,
@@ -111,6 +118,7 @@
     fmtDist, catLabel, esc,
     addVisited, progressPct,
     walkMinutes, suggestedMode, TRANSPORT_MODES, mapsDirUrl,
+    nearbyLabel,
   };
 
   if (typeof module !== 'undefined' && module.exports) module.exports = PICore;
