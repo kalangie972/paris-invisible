@@ -1,8 +1,8 @@
-// Paris Invisible — Service Worker v1.8
+// Paris Invisible — Service Worker v1.11
 // Network-first pour la page (garantit les mises à jour), cache-first pour les assets,
 // network-first pour les tuiles de carte.
 // ⚠️ Bumper CACHE à chaque déploiement modifiant index.html.
-const CACHE = 'paris-invisible-v8';
+const CACHE = 'paris-invisible-v11';
 const ASSETS = [
   './',
   './index.html',

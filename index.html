@@ -190,7 +190,7 @@
   <button class="btn-start" id="btn-start">Explorer Paris</button>
   <div class="splash-note">L'app va demander <b>position</b>, <b>caméra</b> et <b>mouvement</b> — uniquement pour afficher les histoires autour de vous. Rien n'est enregistré ni envoyé.</div>
   <div class="splash-brand" style="margin-top:18px;display:flex;flex-direction:column;align-items:center;gap:3px"><span style="font-size:.62rem;color:var(--muted);letter-spacing:.18em;text-transform:uppercase">Une création</span><span style="font-family:'Playfair Display',serif;font-size:1.05rem;font-weight:700;color:var(--gold);letter-spacing:.22em">F.L.Y</span></div>
-  <div class="splash-version">V1.8 · F.L.Y · Directions approximatives</div>
+  <div class="splash-version">V1.11 · F.L.Y · Directions approximatives</div>
 </div>
 
 <div id="app">
@@ -288,7 +288,7 @@ y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
 <script>
 'use strict';
 /* ============================================================
-   PARIS INVISIBLE — V1.8
+   PARIS INVISIBLE — V1.11
    PWA stable : lissage boussole, rendu throttlé, offline-ready
    ============================================================ */
 
@@ -453,7 +453,37 @@ const POIS = [
    story:"Le village gaulois grandeur nature : le parc à thème 100 % français dédié à l'univers d'Uderzo et Goscinny, réputé pour ses grandes montagnes russes et son humour très hexagonal.",
    dates:"Ouvert le 30 avril 1989, trois ans avant son voisin américain. Tonnerre de Zeus, l'une des plus grandes montagnes russes en bois d'Europe, arrive en 1997 (rénovée en 2022). Toutatis, lancé en 2023, est le coaster le plus rapide de France : 110 km/h.",
    anecdote:"Par Toutatis ! Le parc a longtemps fermé chaque hiver… comme un vrai village gaulois qui hiverne. Il n'est ouvert en (presque) continu que depuis les années 2020.",
-   tags:["1989","Gaulois","Toutatis"]}
+   tags:["1989","Gaulois","Toutatis"]},
+  {id:33,name:"Château de Versailles",cat:"monument",icon:"👑",lat:48.8049,lng:2.1204,addr:"Place d'Armes, 78000 Versailles — RER C Versailles Château",
+   story:"La démesure du Roi-Soleil : 2 300 pièces, 800 hectares de jardins dessinés par Le Nôtre, et une galerie des Glaces où l'histoire du monde s'est écrite deux fois. Le monument le plus visité d'Île-de-France après Paris.",
+   dates:"Simple pavillon de chasse de Louis XIII en 1623, transformé par Louis XIV à partir de 1661. La cour s'y installe le 6 mai 1682. La galerie des Glaces est achevée en 1684 par Hardouin-Mansart. Le peuple ramène la famille royale à Paris le 6 octobre 1789 ; Louis-Philippe en fait un musée en 1837, et le traité de Versailles y est signé le 28 juin 1919, dans la galerie des Glaces.",
+   anecdote:"La galerie des Glaces aligne 357 miroirs — une provocation industrielle : Venise détenait alors le quasi-monopole du miroir, et Colbert débaucha ses maîtres verriers au péril de leur vie pour les faire fabriquer en France.",
+   tags:["1682","Roi-Soleil","Galerie des Glaces"]},
+  {id:34,name:"Château de Fontainebleau",cat:"monument",icon:"⚜️",lat:48.4021,lng:2.7004,addr:"Place du Général-de-Gaulle, 77300 Fontainebleau",
+   story:"« La vraie demeure des rois, la maison des siècles » disait Napoléon : le seul château habité par les souverains français pendant plus de sept siècles, des Capétiens au Second Empire, au cœur de sa forêt légendaire.",
+   dates:"Château médiéval refondé par François Ier à partir de 1528, embelli ensuite par presque tous les régimes. Napoléon y signe son abdication le 6 avril 1814 et fait ses adieux à la Garde dans la cour d'honneur le 20 avril. Classé au patrimoine mondial de l'UNESCO en 1981.",
+   anecdote:"L'escalier en fer-à-cheval, icône du château, n'était au départ qu'une rampe pour carrosses : elle permettait aux voitures de déposer leurs passagers à l'étage noble sans qu'ils posent le pied dans la boue.",
+   tags:["1528","François Ier","Napoléon"]},
+  {id:35,name:"Basilique Saint-Denis",cat:"monument",icon:"🪦",lat:48.9356,lng:2.3597,addr:"1 rue de la Légion d'Honneur, 93200 Saint-Denis — M13 Basilique",
+   story:"La nécropole des rois de France : plus de 40 souverains y reposent, de Dagobert à Louis XVIII, sous les voûtes du tout premier chef-d'œuvre de l'art gothique. Un livre d'histoire de France en gisants de marbre.",
+   dates:"Le chevet voulu par l'abbé Suger, consacré en 1144, fait basculer l'architecture dans le gothique — une première mondiale. Les tombeaux royaux sont profanés en 1793, les dépouilles jetées à la fosse commune, puis solennellement restituées en 1817. La flèche, démontée après une tempête à partir de 1846, fait l'objet d'un chantier de remontage en cours.",
+   anecdote:"En 2004, un petit cœur desséché a rejoint la crypte : celui de Louis XVII, l'enfant du Temple, authentifié en 2000 par comparaison ADN avec une mèche de cheveux de Marie-Antoinette.",
+   tags:["1144","Gothique","Nécropole royale"]},
+  {id:36,name:"Château de Vincennes",cat:"monument",icon:"⚔️",lat:48.8427,lng:2.4357,addr:"1 avenue de Paris, 94300 Vincennes — M1 Château de Vincennes",
+   story:"La grande forteresse des rois avant Versailles : un donjon d'environ 50 mètres — le plus haut donjon médiéval d'Europe — une enceinte colossale et une Sainte-Chapelle, aux portes de Paris.",
+   dates:"Résidence royale dès le XIIe siècle ; Charles V achève le donjon vers 1370. La Sainte-Chapelle, commencée en 1379, n'est achevée qu'en 1552. Devenu prison d'État, il enferme Fouquet, Sade et Mirabeau ; le duc d'Enghien y est fusillé en 1804, Mata Hari en 1917.",
+   anecdote:"Saint Louis rendait la justice sous un chêne du bois de Vincennes — l'image la plus célèbre de la monarchie « de proximité ». Sept siècles plus tard, le donjon servait encore : les archives secrètes de la France libre y furent un temps cachées.",
+   tags:["1370","Donjon","Charles V"]},
+  {id:37,name:"Château de Vaux-le-Vicomte",cat:"monument",icon:"🐿️",lat:48.5660,lng:2.7141,addr:"77950 Maincy, près de Melun",
+   story:"La répétition générale de Versailles : le trio Le Vau, Le Brun et Le Nôtre y invente pour Nicolas Fouquet le grand style français — château, décors et premier vrai jardin à la française en parfaite harmonie.",
+   dates:"Élevé de 1656 à 1661 pour Fouquet, surintendant des finances de Louis XIV. La fête somptueuse du 17 août 1661 éblouit le jeune roi… qui fait arrêter Fouquet le 5 septembre suivant et réquisitionne le trio d'artistes pour bâtir Versailles. Sauvé de la ruine par Alfred Sommier en 1875, le domaine est toujours privé.",
+   anecdote:"L'écureuil sculpté partout dans le château ? C'est l'emblème de Fouquet — « fouquet » signifie écureuil en patois angevin — avec sa devise trop ambitieuse : « Quo non ascendet », jusqu'où ne montera-t-il pas… Louis XIV a répondu à la question.",
+   tags:["1661","Fouquet","Le Nôtre"]},
+  {id:38,name:"Château de Saint-Germain-en-Laye",cat:"monument",icon:"🏰",lat:48.8979,lng:2.0937,addr:"Place Charles-de-Gaulle, 78100 Saint-Germain-en-Laye — RER A",
+   story:"Le château royal des Yvelines : berceau de Louis XIV, résidence de la cour avant Versailles, et sa grande terrasse de Le Nôtre qui domine toute la vallée de la Seine jusqu'à Paris.",
+   dates:"Forteresse de Louis VI vers 1124, reconstruite par François Ier à partir de 1539. Louis XIV y naît le 5 septembre 1638 ; la cour y réside jusqu'au grand départ pour Versailles en 1682. Napoléon III y fonde en 1862 le musée des Antiquités nationales, aujourd'hui musée d'Archéologie nationale. La grande terrasse de Le Nôtre (1669-1673) s'étire sur 2,4 km.",
+   anecdote:"Le château a hébergé un roi… d'Angleterre : Jacques II, chassé par la Glorieuse Révolution de 1688, y tint sa cour en exil jusqu'à sa mort en 1701. Son tombeau est toujours dans l'église d'en face.",
+   tags:["1638","Louis XIV","Le Nôtre"]}
 ];
 
 const CATEGORIES = [
@@ -484,7 +514,7 @@ const $ = id => document.getElementById(id);
 // Fonctions pures : source unique dans core.js (testé par node --test)
 const { haversine, bearingTo, fmtDist, bearingDir, arrowChar, catLabel, esc,
         ribbon, smoothStep, arProjectClamped, addVisited,
-        walkMinutes, suggestedMode, TRANSPORT_MODES, mapsDirUrl } = PICore;
+        walkMinutes, suggestedMode, TRANSPORT_MODES, mapsDirUrl, nearbyLabel } = PICore;
 
 // ---------- PROGRESSION (rétention) ----------
 // POI découverts, persistés localement (localStorage peut être indisponible en navigation privée → try/catch)
@@ -587,8 +617,9 @@ function initGPS(){
   );
 }
 function updateNearbyCount(){
-  const n = poisByDist().filter(p=>p.dist<2000).length;
-  $('nearby-count').textContent = n+' histoire'+(n>1?'s':'')+' autour';
+  const sorted = poisByDist();
+  const n = sorted.filter(p=>p.dist<5000).length;
+  $('nearby-count').textContent = nearbyLabel(n, sorted[0] ? sorted[0].dist : 0);
 }
 
 // ---------- CAMERA ----------
@@ -689,7 +720,7 @@ function updateCompass(){
 function renderARMarkers(){
   const c = $('ar-markers');
   if (!c.offsetWidth) return;
-  const pois = poisByDist().filter(p=>p.dist<5000).slice(0,5);
+  const pois = poisByDist().slice(0,5); // les 5 plus proches, quelle que soit la distance
   const visible = new Map();
   pois.forEach((p,i) => {
     const rel = ((p.bearing - S.smoothHeading) + 360) % 360;
