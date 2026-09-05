@@ -2,47 +2,59 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<meta name="theme-color" content="#0a0a0f">
-<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#061638">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="description" content="Paris Invisible — les monuments, les films, les secrets et les histoires qui vous entourent.">
-<meta name="mobile-web-app-capable" content="yes">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'none'; object-src 'none'; frame-src 'none'; form-action 'none'; script-src 'self' 'sha256-5I/ZxqOYK7yedvUvycFUX85JKQgFqiaalZ06KEeugKk='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://tile.openstreetmap.org; font-src 'self'; media-src 'self' blob:; connect-src 'self' https://tile.openstreetmap.org; worker-src 'self' blob:">
 <meta property="og:title" content="Paris Invisible">
 <meta property="og:description" content="Les monuments, les films, les secrets et les histoires qui vous entourent — par F.L.Y.">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="fr_FR">
 <title>Paris Invisible</title>
-<link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="icon-192.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+<link rel="apple-touch-icon" href="icon-512.png">
+<link rel="stylesheet" href="vendor/fonts/fonts.css">
+<link rel="stylesheet" href="vendor/leaflet/leaflet.css">
 <style>
-  :root{--bg:#0a0a0f;--bg2:#12121a;--gold:#c9a84c;--gold2:#e8c97a;--text:#f0ead8;--muted:#7a7460;--card:#1a1a26;--border:rgba(201,168,76,.15)}
+  :root{--bg:#061638;--bg2:#0b2147;--primary:#c8102e;--gold:#ff6b7d;--gold2:#f8f7f2;--brass:#c9a84c;--text:#f8f7f2;--muted:#bdc9df;--card:#102956;--border:rgba(248,247,242,.16);--on-primary:#fff}
   *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
   html,body{height:100%;overscroll-behavior:none}
   body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;overflow:hidden;user-select:none;-webkit-user-select:none}
+  button{font:inherit}
+  [hidden]{display:none!important}
+  :focus-visible{outline:3px solid var(--gold2);outline-offset:3px}
+  .sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
 
   /* SPLASH */
-  #splash{position:fixed;inset:0;z-index:1000;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;transition:opacity .6s;padding:env(safe-area-inset-top) 20px env(safe-area-inset-bottom)}
+  #splash{position:fixed;inset:0;z-index:1000;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;transition:opacity .6s;padding:env(safe-area-inset-top) 20px env(safe-area-inset-bottom);overflow-y:auto}
   #splash.hidden{opacity:0;pointer-events:none}
-  .splash-title{font-family:'Playfair Display',serif;font-size:clamp(2.4rem,10vw,3.2rem);font-weight:700;text-align:center;line-height:1.1}
-  .splash-title span{color:var(--gold);font-style:italic}
+  .splash-logo{display:block;width:clamp(92px,29vw,132px);height:auto;max-height:220px;object-fit:contain;margin-bottom:-4px}
+  .splash-title{font-family:'Playfair Display',serif;font-size:clamp(2.4rem,10vw,3.2rem);font-weight:700;text-align:center;line-height:1.1;color:var(--brass)}
+  .splash-title span{color:var(--text);font-style:italic}
   .splash-sub{color:var(--muted);font-size:.85rem;letter-spacing:.1em;text-transform:uppercase}
   .splash-line{width:60px;height:1px;background:var(--gold)}
-  .btn-start{margin-top:20px;background:var(--gold);color:var(--bg);border:none;padding:15px 46px;border-radius:40px;font-family:inherit;font-size:1.02rem;font-weight:500;cursor:pointer;transition:transform .15s}
+  .btn-start{margin-top:20px;background:var(--primary);color:var(--on-primary);border:none;padding:15px 46px;border-radius:40px;font-family:inherit;font-size:1.02rem;font-weight:600;cursor:pointer;transition:transform .15s}
   .btn-start:active{transform:scale(.96)}
   .splash-note{color:var(--muted);font-size:.72rem;text-align:center;max-width:270px;line-height:1.6;margin-top:6px}
-  .splash-version{position:absolute;bottom:calc(14px + env(safe-area-inset-bottom));font-size:.62rem;color:var(--muted);opacity:.6}
+  .splash-privacy{color:var(--muted);font-size:.68rem;line-height:1.55;text-align:center;max-width:310px}
+  .splash-privacy summary{color:var(--gold2);cursor:pointer;min-height:28px;display:flex;align-items:center;justify-content:center}
+  .splash-privacy p{padding:5px 8px 0}
+  .splash-version{position:absolute;bottom:calc(14px + env(safe-area-inset-bottom));font-size:.68rem;color:var(--muted);opacity:.85}
+  .lang-switch{display:flex;align-items:center;justify-content:center;gap:5px;padding:3px;border:1px solid var(--border);border-radius:22px;background:rgba(16,41,86,.72)}
+  .lang-chip{min-width:44px;min-height:34px;padding:5px 9px;border:0;border-radius:17px;background:transparent;color:var(--muted);font-size:.7rem;font-weight:600;cursor:pointer}
+  .lang-chip.active{background:var(--primary);color:#fff}
+  .info-language{margin:0 auto 13px;width:max-content}
 
   /* APP LAYOUT */
   #app{display:none;flex-direction:column;height:100%;height:100dvh;padding-top:env(safe-area-inset-top)}
   #app.visible{display:flex}
+  /* La grande bannière adaptive Google peut atteindre 150 dp/pt. */
   .header{padding:11px 16px 8px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);background:var(--bg);z-index:500;flex-shrink:0}
-  .header-logo{font-family:'Playfair Display',serif;font-size:1.18rem;font-weight:700}
-  .header-logo span{color:var(--gold);font-style:italic}
+  .header-logo{font-family:'Playfair Display',serif;font-size:1.18rem;font-weight:700;color:var(--brass)}
+  .header-logo span{color:var(--text);font-style:italic}
+  .header-actions{display:flex;align-items:center;gap:10px}
   .header-right{display:flex;flex-direction:column;align-items:flex-end;gap:1px}
+  .btn-info,.btn-store{width:44px;height:44px;border-radius:50%;border:1px solid var(--border);background:var(--card);color:var(--gold2);font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center}
   .nearby-count{font-size:.75rem;color:var(--gold);font-weight:500}
   .gps-status{font-size:.65rem;color:var(--muted);display:flex;align-items:center;gap:4px}
   .gps-dot{width:5px;height:5px;border-radius:50%;background:var(--muted);flex-shrink:0}
@@ -51,7 +63,7 @@
   @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
 
   .tabs{display:flex;border-bottom:1px solid var(--border);background:var(--bg);padding:0 16px;z-index:500;flex-shrink:0}
-  .tab{flex:1;padding:10px 0;text-align:center;font-size:.82rem;font-weight:500;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;transition:color .2s,border-color .2s}
+  .tab{flex:1;min-height:44px;padding:10px 0;text-align:center;font-size:.82rem;font-weight:500;color:var(--muted);cursor:pointer;border:0;border-bottom:2px solid transparent;background:transparent;transition:color .2s,border-color .2s}
   .tab.active{color:var(--gold);border-bottom-color:var(--gold)}
 
   .view{flex:1;display:flex;flex-direction:column;overflow:hidden;position:relative}
@@ -60,23 +72,23 @@
   /* AR */
   .ar-container{position:relative;flex:1;overflow:hidden;background:#000}
   #camera-feed{width:100%;height:100%;object-fit:cover;display:block}
-  .no-camera{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:13px;background:radial-gradient(ellipse at center,#1a1a2e 0%,var(--bg) 70%);padding:32px;z-index:25}
+  .no-camera{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:13px;background:radial-gradient(ellipse at center,#173b78 0%,var(--bg) 70%);padding:32px;z-index:25}
   .no-camera.hidden{display:none}
   .no-camera-icon{font-size:2.5rem}
   .no-camera-title{font-family:'Playfair Display',serif;font-size:1.12rem;text-align:center}
   .no-camera-text{color:var(--muted);font-size:.79rem;text-align:center;line-height:1.7;max-width:260px}
-  .btn-allow{position:relative;z-index:30;background:var(--gold);color:var(--bg);border:none;padding:11px 28px;border-radius:40px;font-size:.85rem;font-weight:500;cursor:pointer;font-family:inherit}
+  .btn-allow{position:relative;z-index:30;background:var(--primary);color:var(--on-primary);border:none;padding:11px 28px;border-radius:40px;font-size:.85rem;font-weight:600;cursor:pointer;font-family:inherit}
 
-  .compass-ring{position:absolute;top:12px;left:50%;transform:translateX(-50%);background:rgba(10,10,15,.78);border:1px solid var(--border);border-radius:18px;padding:7px 13px;display:flex;align-items:center;gap:5px;backdrop-filter:blur(8px);z-index:20}
+  .compass-ring{position:absolute;top:12px;left:50%;transform:translateX(-50%);background:rgba(6,22,56,.82);border:1px solid var(--border);border-radius:18px;padding:7px 13px;display:flex;align-items:center;gap:5px;backdrop-filter:blur(8px);z-index:20}
   .compass-dir{font-size:.69rem;font-weight:500;color:var(--muted);width:22px;text-align:center}
   .compass-dir.current{color:var(--gold);font-weight:700;font-size:.85rem}
-  .compass-sep{font-size:.55rem;color:rgba(201,168,76,.3)}
-  .ar-disclaimer{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);background:rgba(10,10,15,.72);border:1px solid var(--border);border-radius:20px;padding:4px 13px;font-size:.64rem;color:var(--muted);white-space:nowrap;backdrop-filter:blur(6px);z-index:20}
+  .compass-sep{font-size:.55rem;color:rgba(248,247,242,.3)}
+  .ar-disclaimer{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);background:rgba(6,22,56,.78);border:1px solid var(--border);border-radius:20px;padding:4px 13px;font-size:.64rem;color:var(--muted);white-space:nowrap;backdrop-filter:blur(6px);z-index:20}
 
   .ar-markers{position:absolute;inset:54px 10px 42px;z-index:15}
-  .ar-marker{position:absolute;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;cursor:pointer;transition:left .25s ease-out,top .25s ease-out;will-change:left}
+  .ar-marker{position:absolute;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;cursor:pointer;transition:left .25s ease-out,top .25s ease-out;will-change:left;border:0;background:transparent;color:inherit;padding:0;text-align:left}
   .ar-marker:active{transform:translate(-50%,-50%) scale(.92)}
-  .marker-bubble{background:rgba(10,10,15,.88);border:1px solid var(--border);border-radius:11px;padding:7px 11px;backdrop-filter:blur(10px);display:flex;align-items:center;gap:7px;max-width:172px;box-shadow:0 4px 16px rgba(0,0,0,.5)}
+  .marker-bubble{background:rgba(6,22,56,.9);border:1px solid var(--border);border-radius:11px;padding:7px 11px;backdrop-filter:blur(10px);display:flex;align-items:center;gap:7px;max-width:172px;box-shadow:0 4px 16px rgba(0,0,0,.35)}
   .marker-icon{font-size:1rem}
   .marker-name{font-size:.73rem;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:118px}
   .marker-dist{font-size:.65rem;color:var(--gold)}
@@ -85,9 +97,9 @@
 
   .direction-strip{background:var(--bg);border-top:1px solid var(--border);padding:9px 12px calc(9px + env(safe-area-inset-bottom));overflow-x:auto;display:flex;gap:8px;scrollbar-width:none;flex-shrink:0;-webkit-overflow-scrolling:touch}
   .direction-strip::-webkit-scrollbar{display:none}
-  .dir-card{flex-shrink:0;background:var(--card);border:1px solid var(--border);border-radius:11px;padding:8px 12px;display:flex;align-items:center;gap:8px;cursor:pointer;min-width:150px}
+  .dir-card{flex-shrink:0;background:var(--card);border:1px solid var(--border);border-radius:11px;padding:8px 12px;display:flex;align-items:center;gap:8px;cursor:pointer;min-width:150px;min-height:44px;color:var(--text);text-align:left}
   .dir-card:active{opacity:.8}
-  .dir-card.nearby{border-color:rgba(201,168,76,.35)}
+  .dir-card.nearby{border-color:rgba(255,107,125,.45)}
   .dir-arrow{font-size:1.25rem;transition:transform .25s}
   .dir-card-info{flex:1;min-width:0}
   .dir-card-name{font-size:.75rem;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -95,27 +107,32 @@
 
   /* MAP */
   #leaflet-map{flex:1;width:100%;z-index:1}
-  .leaflet-container{background:#111722!important;font-family:'DM Sans',sans-serif!important}
+  .map-fallback{height:100%;display:flex;align-items:center;justify-content:center;text-align:center;padding:32px;color:var(--muted);line-height:1.6;background:radial-gradient(ellipse at center,#173b78 0%,var(--bg) 70%)}
+  .leaflet-container{background:#061638!important;font-family:'DM Sans',sans-serif!important}
   .leaflet-popup-content-wrapper{background:var(--card)!important;color:var(--text)!important;border:1px solid var(--border)!important;border-radius:12px!important}
   .leaflet-popup-tip{background:var(--card)!important}
   .leaflet-popup-content{margin:10px 14px!important;font-size:.82rem!important}
   .popup-title{font-family:'Playfair Display',serif;font-weight:700;font-size:.92rem;margin-bottom:3px}
   .popup-dist{color:var(--gold);font-size:.74rem;margin-bottom:6px}
-  .popup-btn{display:inline-block;background:var(--gold);color:var(--bg);padding:5px 14px;border-radius:14px;font-size:.74rem;font-weight:500;cursor:pointer}
-  .btn-around{position:absolute;bottom:calc(16px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);z-index:400;background:var(--gold);color:var(--bg);border:none;padding:11px 26px;border-radius:30px;font-family:inherit;font-size:.85rem;font-weight:500;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.4)}
+  .popup-btn{display:inline-block;background:var(--primary);color:var(--on-primary);padding:7px 14px;border:0;border-radius:14px;font-size:.74rem;font-weight:600;cursor:pointer}
+  .btn-around{position:absolute;bottom:calc(16px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);z-index:400;background:var(--primary);color:var(--on-primary);border:none;padding:11px 26px;border-radius:30px;font-family:inherit;font-size:.85rem;font-weight:600;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.35)}
   .btn-around:active{transform:translateX(-50%) scale(.96)}
-  .poi-marker-icon{display:flex;align-items:center;justify-content:center;font-size:17px;background:rgba(10,10,15,.85);border:1.5px solid var(--gold);border-radius:50%;box-shadow:0 2px 8px rgba(0,0,0,.5)}
-  .user-marker-icon{background:var(--gold);border:2.5px solid #fff;border-radius:50%;box-shadow:0 0 0 6px rgba(201,168,76,.25)}
+  .btn-around:disabled{opacity:.5;cursor:not-allowed}
+  .poi-marker-icon{display:flex;align-items:center;justify-content:center;font-size:17px;background:rgba(6,22,56,.9);border:1.5px solid var(--gold);border-radius:50%;box-shadow:0 2px 8px rgba(0,0,0,.4)}
+  .user-marker-icon{background:var(--primary);border:2.5px solid #fff;border-radius:50%;box-shadow:0 0 0 6px rgba(200,16,46,.25)}
 
   /* LIST */
   #view-list{overflow-y:auto;padding:13px 13px calc(13px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:9px;-webkit-overflow-scrolling:touch}
+  #poi-list{display:flex;flex-direction:column;gap:9px}
   .filter-bar{display:flex;gap:7px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none;flex-shrink:0;-webkit-overflow-scrolling:touch}
   .filter-bar::-webkit-scrollbar{display:none}
-  .filter-chip{flex-shrink:0;padding:5px 13px;border-radius:20px;border:1px solid var(--border);font-size:.74rem;font-weight:500;cursor:pointer;background:transparent;color:var(--muted);transition:all .2s;font-family:inherit}
-  .filter-chip.active{background:var(--gold);color:var(--bg);border-color:var(--gold)}
-  .poi-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:13px;cursor:pointer;display:flex;gap:11px;align-items:flex-start}
+  .filter-chip{flex-shrink:0;min-height:36px;padding:5px 13px;border-radius:20px;border:1px solid var(--border);font-size:.74rem;font-weight:500;cursor:pointer;background:transparent;color:var(--muted);transition:all .2s;font-family:inherit}
+  .filter-chip.active{background:var(--primary);color:var(--on-primary);border-color:var(--primary)}
+  .poi-card{width:100%;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:13px;cursor:pointer;display:flex;gap:11px;align-items:flex-start;color:var(--text);text-align:left;font:inherit}
   .poi-card:active{opacity:.85}
-  .poi-card-icon{font-size:1.4rem;width:36px;height:36px;display:flex;align-items:center;justify-content:center;background:rgba(201,168,76,.07);border-radius:9px;flex-shrink:0}
+  .poi-card.locked{border-color:rgba(201,168,76,.32);background:linear-gradient(135deg,var(--card),rgba(201,168,76,.07))}
+  .poi-card.locked .poi-card-teaser{font-style:italic}
+  .poi-card-icon{font-size:1.4rem;width:36px;height:36px;display:flex;align-items:center;justify-content:center;background:rgba(255,107,125,.10);border-radius:9px;flex-shrink:0}
   .poi-card-body{flex:1;min-width:0}
   .poi-card-name{font-family:'Playfair Display',serif;font-size:.92rem;font-weight:700;margin-bottom:2px}
   .poi-card-teaser{font-size:.76rem;color:var(--muted);line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
@@ -124,23 +141,20 @@
   .poi-dist{font-size:.7rem;color:var(--gold);font-weight:500}
   .cat-monument{background:rgba(76,122,201,.15);color:#7aaae8}
   .cat-cinema{background:rgba(201,76,76,.15);color:#e87a7a}
-  .cat-histoire{background:rgba(201,168,76,.15);color:var(--gold2)}
+  .cat-histoire{background:rgba(200,16,46,.18);color:#ff93a0}
   .cat-insolite{background:rgba(155,76,201,.15);color:#c47ae8}
   .cat-artiste{background:rgba(76,201,122,.15);color:#7ae8a4}
+  .cat-parc{background:rgba(63,184,181,.16);color:#78dedb}
   .progress-line{display:flex;align-items:center;gap:9px;padding:2px 2px 0;flex-shrink:0}
   .progress-label{font-size:.72rem;color:var(--gold);font-weight:500;white-space:nowrap}
   .progress-track{flex:1;height:4px;background:var(--card);border-radius:2px;overflow:hidden}
-  .progress-fill{height:100%;background:var(--gold);border-radius:2px;transition:width .4s ease}
+  .progress-fill{height:100%;background:var(--primary);border-radius:2px;transition:width .4s ease}
   .poi-visited-badge{font-size:.62rem;color:#4cc97a;font-weight:600;margin-left:6px}
-  .fly-card{background:linear-gradient(135deg,rgba(201,168,76,.08),transparent);border:1px solid var(--border);border-radius:14px;padding:13px 15px;text-align:center;margin-top:4px}
-  .fly-card-title{font-family:'Playfair Display',serif;font-size:.9rem;font-weight:700;margin-bottom:3px}
-  .fly-card-text{font-size:.73rem;color:var(--muted);line-height:1.5}
-  .fly-card a{color:var(--gold);text-decoration:none;font-weight:500}
-
+  .poi-lock-badge{font-family:'DM Sans',sans-serif;font-size:.62rem;color:var(--brass);font-weight:600;margin-left:6px;white-space:nowrap}
   /* MODAL */
   #modal{position:fixed;inset:0;z-index:900;background:rgba(0,0,0,.7);backdrop-filter:blur(4px);display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity .3s}
   #modal.open{opacity:1;pointer-events:all}
-  .modal-sheet{width:100%;background:var(--bg2);border-radius:22px 22px 0 0;border-top:1px solid var(--border);padding:0 0 env(safe-area-inset-bottom);transform:translateY(100%);transition:transform .35s cubic-bezier(.32,0,.67,0);max-height:88vh;max-height:88dvh;overflow-y:auto;-webkit-overflow-scrolling:touch}
+  .modal-sheet{width:100%;background:var(--bg2);border-radius:22px 22px 0 0;border-top:1px solid var(--border);padding:0 0 env(safe-area-inset-bottom);transform:translateY(100%);transition:transform .35s cubic-bezier(.32,0,.67,0);max-height:88vh;max-height:88dvh;overflow-y:auto;-webkit-overflow-scrolling:touch;user-select:text;-webkit-user-select:text}
   #modal.open .modal-sheet{transform:translateY(0);transition-timing-function:cubic-bezier(.33,1,.68,1)}
   .modal-handle{width:38px;height:4px;background:rgba(255,255,255,.12);border-radius:2px;margin:10px auto 0}
   .modal-header{padding:16px 20px 13px;border-bottom:1px solid var(--border)}
@@ -149,84 +163,157 @@
   .modal-addr{font-size:.76rem;color:var(--muted)}
   .modal-body{padding:16px 20px}
   .modal-story{font-size:.88rem;line-height:1.75;margin-bottom:14px}
-  .modal-anecdote{background:rgba(201,168,76,.06);border-left:2px solid var(--gold);border-radius:0 10px 10px 0;padding:11px 13px;margin-bottom:14px}
+  .modal-anecdote{background:rgba(200,16,46,.08);border-left:2px solid var(--gold);border-radius:0 10px 10px 0;padding:11px 13px;margin-bottom:14px}
   .modal-anecdote-label{font-size:.66rem;color:var(--gold);text-transform:uppercase;letter-spacing:.06em;font-weight:600;margin-bottom:4px}
   .modal-anecdote-text{font-size:.83rem;line-height:1.65;font-style:italic}
   .modal-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
   .modal-tag{padding:3px 10px;border-radius:10px;border:1px solid var(--border);font-size:.7rem;color:var(--muted)}
+  .modal-website{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:44px;padding:9px 12px;border:1px solid rgba(201,168,76,.38);border-radius:12px;background:rgba(201,168,76,.055);color:var(--gold2);font-size:.74rem;font-weight:600;text-decoration:none}
+  .modal-website[hidden]{display:none}
+  .modal-website:active{opacity:.76}
+  .modal-website-note{color:var(--muted);font-size:.61rem;font-weight:400;margin-left:auto;text-align:right}
+  .modal-website-arrow{color:var(--gold);font-size:.9rem}
   .modal-actions{display:flex;gap:8px;padding:0 20px 20px}
   .modal-btn{flex:1;padding:12px 6px;border-radius:12px;border:none;font-size:.81rem;font-weight:500;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:5px}
   .modal-btn:active{opacity:.8}
-  .modal-btn-primary{background:var(--gold);color:var(--bg)}
+  .modal-btn-primary{background:var(--primary);color:var(--on-primary)}
   .modal-dates{border-left:2px solid var(--gold)}
+  .modal-figures{border-left:2px solid var(--primary)}
   .btn-nocam{background:transparent;border:1px solid var(--border);color:var(--text);padding:10px 22px;border-radius:26px;font-family:inherit;font-size:.8rem;cursor:pointer}
   .no-camera-privacy{font-size:.66rem;color:var(--muted);max-width:290px;text-align:center;line-height:1.55;margin-top:2px}
-  #btn-cam-back{position:absolute;top:64px;left:12px;z-index:30;background:rgba(15,15,25,.78);border:1px solid var(--border);color:var(--text);border-radius:50%;width:44px;height:44px;font-size:1.05rem;cursor:pointer;display:none;align-items:center;justify-content:center}
+  #btn-cam-back{position:absolute;top:64px;left:12px;z-index:30;background:rgba(6,22,56,.84);border:1px solid var(--border);color:var(--text);border-radius:50%;width:44px;height:44px;font-size:1.05rem;cursor:pointer;display:none;align-items:center;justify-content:center}
   #btn-cam-back.visible{display:flex}
-  #btn-radar{position:absolute;top:64px;right:12px;z-index:30;background:rgba(15,15,25,.78);border:1px solid var(--border);color:var(--text);border-radius:50%;width:44px;height:44px;font-size:1.15rem;cursor:pointer;display:flex;align-items:center;justify-content:center}
-  #radar-view{position:absolute;inset:0;z-index:26;background:radial-gradient(ellipse at center,#12121e 0%,var(--bg) 75%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px}
+  #ori-warning{position:absolute;top:64px;left:50%;transform:translateX(-50%);z-index:29;background:rgba(200,16,46,.16);border:1px solid var(--gold);color:var(--gold);font-size:.72rem;padding:8px 14px;border-radius:20px;display:none;cursor:pointer;max-width:82%;text-align:center;min-height:40px}
+  #ori-warning.visible{display:block}
+  #btn-radar{position:absolute;top:64px;right:12px;z-index:30;background:rgba(6,22,56,.84);border:1px solid var(--border);color:var(--text);border-radius:50%;width:44px;height:44px;font-size:1.15rem;cursor:pointer;display:flex;align-items:center;justify-content:center}
+  #radar-view{position:absolute;inset:0;z-index:26;background:radial-gradient(ellipse at center,#173b78 0%,var(--bg) 75%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px}
   #radar-view.hidden{display:none}
   #radar-svg{width:min(92vw,92%,460px);aspect-ratio:1;touch-action:manipulation}
-  .radar-hint{font-size:.68rem;color:var(--muted)}
-  .transport-panel{display:none;flex-direction:column;gap:8px;padding:10px 0 2px}
+  .radar-hint{font-size:.68rem;color:var(--muted);text-align:center;padding:0 18px}
+  .transport-panel{display:none;flex-direction:column;gap:8px;padding:10px 20px 2px}
   .transport-panel.open{display:flex}
   .transport-label{font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
   .transport-row{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}
   .transport-chip{display:flex;flex-direction:column;align-items:center;gap:3px;padding:9px 4px;border-radius:12px;border:1px solid var(--border);background:var(--card);color:var(--text);font-family:inherit;font-size:.68rem;cursor:pointer}
   .transport-chip .t-icon{font-size:1.15rem}
   .transport-chip .t-eta{font-size:.6rem;color:var(--muted)}
-  .transport-chip.suggested{border-color:var(--gold);background:rgba(201,168,76,.12)}
+  .transport-chip.suggested{border-color:var(--gold);background:rgba(200,16,46,.14)}
   .transport-chip.suggested .t-eta{color:var(--gold)}
   .transport-chip:active{opacity:.75}
+  .fly-taxi-link{display:flex;align-items:center;gap:10px;min-height:52px;padding:8px 12px;border:1px solid rgba(255,107,125,.35);border-radius:12px;background:linear-gradient(135deg,rgba(200,16,46,.14),rgba(255,255,255,.035));color:var(--text);text-decoration:none}
+  .fly-taxi-link:active{opacity:.76}
+  .fly-taxi-logo{width:42px;height:34px;object-fit:contain;flex:none}
+  .fly-taxi-copy{display:flex;flex:1;min-width:0;flex-direction:column;gap:1px}
+  .fly-taxi-copy strong{font-size:.72rem;color:var(--gold2);font-weight:600}
+  .fly-taxi-copy small{font-size:.59rem;color:var(--muted);line-height:1.35}
+  .fly-taxi-arrow{color:var(--gold);font-size:.9rem}
+  .fly-contact-trigger{min-height:38px;border:0;background:transparent;color:var(--muted);font-family:inherit;font-size:.65rem;text-decoration:underline;text-decoration-color:rgba(255,107,125,.55);text-underline-offset:3px;cursor:pointer}
+  .fly-contact-trigger:active{color:var(--gold2)}
+  .fly-taxi-offer{display:flex;flex-direction:column;gap:8px}
+  .fly-taxi-offer[hidden]{display:none}
+  #fly-contact-modal{position:fixed;inset:0;z-index:940;background:rgba(0,0,0,.8);backdrop-filter:blur(5px);display:flex;align-items:center;justify-content:center;padding:18px;opacity:0;pointer-events:none;transition:opacity .22s}
+  #fly-contact-modal.open{opacity:1;pointer-events:all}
+  .fly-contact-card{width:min(100%,370px);max-height:calc(100dvh - 36px);overflow-y:auto;background:var(--bg2);border:1px solid rgba(255,107,125,.4);border-radius:22px;padding:18px;text-align:center;transform:scale(.96);transition:transform .22s}
+  #fly-contact-modal.open .fly-contact-card{transform:scale(1)}
+  .fly-contact-brand{width:92px;height:58px;object-fit:contain;margin:0 auto 2px}
+  .fly-contact-title{font-family:'Playfair Display',serif;color:var(--gold2);font-size:1.24rem}
+  .fly-contact-subtitle{color:var(--muted);font-size:.7rem;line-height:1.5;margin:4px auto 12px;max-width:290px}
+  .fly-contact-qr{display:block;width:min(68vw,230px);height:auto;aspect-ratio:1;margin:0 auto 12px;border-radius:14px}
+  .fly-contact-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .fly-contact-action,.fly-contact-close{min-height:44px;border-radius:12px;border:1px solid var(--border);background:var(--card);color:var(--text);display:flex;align-items:center;justify-content:center;text-align:center;text-decoration:none;font-family:inherit;font-size:.72rem;padding:8px;cursor:pointer}
+  .fly-contact-action.wide{grid-column:1/-1;border-color:var(--gold);color:var(--gold2)}
+  .fly-contact-close{width:100%;margin-top:8px;background:var(--primary);border-color:var(--primary);color:var(--on-primary);font-weight:600}
   .modal-btn-secondary{background:var(--card);color:var(--text);border:1px solid var(--border)}
-  .modal-btn-audio{background:rgba(201,168,76,.12);color:var(--gold);border:1px solid var(--gold)}
-  .modal-btn-audio.playing{background:var(--gold);color:var(--bg)}
+  .modal-btn-audio{background:rgba(200,16,46,.14);color:var(--gold);border:1px solid var(--gold)}
+  .modal-btn-audio.playing{background:var(--primary);color:var(--on-primary)}
+  #info-modal{position:fixed;inset:0;z-index:920;background:rgba(0,0,0,.72);backdrop-filter:blur(4px);display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity .25s}
+  #info-modal.open{opacity:1;pointer-events:all}
+  .info-sheet{width:100%;max-height:88dvh;overflow-y:auto;background:var(--bg2);border-radius:22px 22px 0 0;border-top:1px solid var(--border);padding:20px 20px calc(24px + env(safe-area-inset-bottom));transform:translateY(100%);transition:transform .3s}
+  #info-modal.open .info-sheet{transform:translateY(0)}
+  .info-title{font-family:'Playfair Display',serif;font-size:1.45rem;margin-bottom:4px}
+  .info-version{color:var(--gold);font-size:.75rem;margin-bottom:16px}
+  .info-section{background:var(--card);border:1px solid var(--border);border-radius:13px;padding:13px;margin-bottom:10px}
+  .info-section h3{font-size:.78rem;color:var(--gold2);margin-bottom:6px}
+  .info-section p{font-size:.76rem;color:var(--muted);line-height:1.65}
+  .info-links{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:14px 0}
+  .info-link,.info-close{min-height:44px;border-radius:12px;border:1px solid var(--border);background:var(--card);color:var(--text);display:flex;align-items:center;justify-content:center;text-align:center;text-decoration:none;font-size:.78rem;padding:8px;cursor:pointer}
+  .info-close{width:100%;background:var(--primary);color:var(--on-primary);border-color:var(--primary);font-weight:600}
+
+  /* ACHATS INTÉGRÉS — surface volontairement compacte */
+  #store-modal{position:fixed;inset:0;z-index:930;background:rgba(0,0,0,.72);backdrop-filter:blur(4px);display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity .25s}
+  #store-modal.open{opacity:1;pointer-events:all}
+  #store-modal.open .store-sheet{transform:translateY(0)}
+  .store-sheet{width:100%;max-height:90dvh;overflow-y:auto;background:var(--bg2);border-radius:22px 22px 0 0;border-top:1px solid var(--border);padding:20px 20px calc(24px + env(safe-area-inset-bottom));transform:translateY(100%);transition:transform .3s}
+  .store-intro{font-size:.78rem;color:var(--muted);line-height:1.6;margin:7px 0 14px}
+  .store-base{display:flex;align-items:center;gap:10px;background:rgba(76,201,122,.09);border:1px solid rgba(76,201,122,.34);border-radius:13px;padding:12px;margin-bottom:10px}
+  .store-base strong{display:block;font-size:.82rem;color:var(--text)}
+  .store-base small{display:block;color:var(--muted);font-size:.68rem;margin-top:2px}
+  .store-product{background:var(--card);border:1px solid var(--border);border-radius:13px;padding:13px;margin-bottom:9px}
+  .store-product.recommended{border-color:rgba(201,168,76,.62)}
+  .store-product-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+  .store-product h3{font-family:'Playfair Display',serif;font-size:1rem;color:var(--text)}
+  .store-product p{font-size:.72rem;color:var(--muted);line-height:1.55;margin:5px 0 10px}
+  .store-buy{width:100%;min-height:44px;border:0;border-radius:11px;background:var(--primary);color:#fff;font-weight:600;cursor:pointer;padding:9px 12px}
+  .store-buy:disabled{opacity:.58;cursor:default}
+  .store-state{font-size:.65rem;color:var(--brass);font-weight:600;white-space:nowrap}
+  .store-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:13px}
+  .store-secondary{min-height:44px;border-radius:11px;border:1px solid var(--border);background:var(--card);color:var(--text);cursor:pointer;padding:8px;font-size:.76rem}
+  .store-note{text-align:center;color:var(--muted);font-size:.65rem;line-height:1.5;margin-top:11px}
 
   .toast{position:fixed;bottom:calc(20px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%) translateY(90px);background:var(--card);border:1px solid var(--border);border-radius:10px;padding:9px 18px;font-size:.8rem;z-index:950;transition:transform .3s;max-width:88vw;text-align:center}
   .toast.show{transform:translateX(-50%) translateY(0)}
   ::-webkit-scrollbar{width:3px;height:3px}
   ::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
+  }
 </style>
 </head>
 <body>
-<noscript><div style="padding:40px 20px;text-align:center;font-family:sans-serif;color:#f0ead8">Paris Invisible nécessite JavaScript pour fonctionner.</div></noscript>
+<noscript><div style="padding:40px 20px;text-align:center;font-family:sans-serif;color:#f8f7f2;background:#061638">Paris Invisible nécessite JavaScript pour fonctionner.</div></noscript>
 
 <div id="splash">
-  <div class="splash-line"></div>
+  <img class="splash-logo" src="assets/brand/logo-paris-histoire-active.svg" alt="Médaillon historique de Paris en laiton, rehaussé de trois éclats dorés discrets, avec la tour Eiffel et la devise Fluctuat nec mergitur">
   <h1 class="splash-title">Paris<br><span>Invisible</span></h1>
-  <div class="splash-sub">La ville qui vous parle</div>
+  <div class="splash-sub" data-i18n="tagline">La ville qui vous parle</div>
   <div class="splash-line"></div>
-  <button class="btn-start" id="btn-start">Explorer Paris</button>
-  <div class="splash-note">L'app va demander <b>position</b>, <b>caméra</b> et <b>mouvement</b> — uniquement pour afficher les histoires autour de vous. Rien n'est enregistré ni envoyé.</div>
-  <div class="splash-brand" style="margin-top:18px;display:flex;flex-direction:column;align-items:center;gap:3px"><span style="font-size:.62rem;color:var(--muted);letter-spacing:.18em;text-transform:uppercase">Une création</span><span style="font-family:'Playfair Display',serif;font-size:1.05rem;font-weight:700;color:var(--gold);letter-spacing:.22em">F.L.Y</span></div>
-  <div class="splash-version">V1.13 · F.L.Y · Directions approximatives</div>
+  <div class="lang-switch" role="group" aria-label="Langue · Language · Idioma · Sprache · Lingua · 言語 · 语言"><button type="button" class="lang-chip" data-lang="fr" aria-label="Français">FR</button><button type="button" class="lang-chip" data-lang="en" aria-label="English">EN</button><button type="button" class="lang-chip" data-lang="es" aria-label="Español">ES</button><button type="button" class="lang-chip" data-lang="de" aria-label="Deutsch">DE</button><button type="button" class="lang-chip" data-lang="it" aria-label="Italiano">IT</button><button type="button" class="lang-chip" data-lang="ja" aria-label="日本語">日本語</button><button type="button" class="lang-chip" data-lang="zh" aria-label="简体中文">中文</button></div>
+  <button type="button" class="btn-start" id="btn-start" data-i18n="start">Explorer Paris</button>
+  <div class="splash-note" data-i18n="included_note">Application gratuite avec 5 histoires variées, sans publicité. La version complète à 4,99 € débloque les 44 lieux.</div>
+  <details class="splash-privacy"><summary data-i18n="privacy_summary">Confidentialité</summary><p data-i18n="privacy_splash">La position et l'orientation ne sont pas stockées par l'app. Aucune image caméra n'est enregistrée ni transmise. Les découvertes et le choix sans caméra restent dans ce navigateur.</p></details>
+  <div class="splash-brand" style="margin-top:18px;display:flex;flex-direction:column;align-items:center;gap:3px"><span style="font-size:.62rem;color:var(--muted);letter-spacing:.18em;text-transform:uppercase" data-i18n="creation">Une création</span><span style="font-family:'Playfair Display',serif;font-size:1.05rem;font-weight:700;color:var(--gold);letter-spacing:.22em">F.L.Y</span></div>
+  <div class="splash-version">V1.28.0 · F.L.Y · Directions approximatives</div>
 </div>
 
-<div id="app">
+<div id="app" aria-hidden="true" inert>
   <header class="header">
     <div style="display:flex;flex-direction:column"><div class="header-logo">Paris <span>Invisible</span></div><div style="font-size:.55rem;color:var(--muted);letter-spacing:.2em;margin-top:-1px">BY F.L.Y</div></div>
-    <div class="header-right">
-      <div class="nearby-count" id="nearby-count">— histoires autour</div>
-      <div class="gps-status"><div class="gps-dot" id="gps-dot"></div><span id="gps-label">Localisation…</span></div>
+    <div class="header-actions">
+      <div class="header-right">
+        <div class="nearby-count" id="nearby-count">— histoires autour</div>
+        <div class="gps-status"><div class="gps-dot" id="gps-dot"></div><span id="gps-label" data-i18n="location_loading">Localisation…</span></div>
+      </div>
+      <button type="button" class="btn-store" id="btn-store" aria-label="Version complète">🔓</button>
+      <button type="button" class="btn-info" id="btn-info" aria-label="À propos et confidentialité">ⓘ</button>
     </div>
   </header>
 
-  <nav class="tabs" role="tablist">
-    <div class="tab active" data-tab="ar" role="tab" tabindex="0" aria-selected="true">🔭 Autour</div>
-    <div class="tab" data-tab="map" role="tab" tabindex="0" aria-selected="false">🗺️ Carte</div>
-    <div class="tab" data-tab="list" role="tab" tabindex="0" aria-selected="false">📜 Liste</div>
+  <nav class="tabs" role="tablist" aria-label="Navigation principale">
+    <button type="button" class="tab active" id="tab-ar" data-tab="ar" role="tab" tabindex="0" aria-selected="true" aria-controls="view-ar" data-i18n="around">🔭 Autour</button>
+    <button type="button" class="tab" id="tab-map" data-tab="map" role="tab" tabindex="-1" aria-selected="false" aria-controls="view-map" data-i18n="map">🗺️ Carte</button>
+    <button type="button" class="tab" id="tab-list" data-tab="list" role="tab" tabindex="-1" aria-selected="false" aria-controls="view-list" data-i18n="list">📜 Liste</button>
   </nav>
 
-  <section id="view-ar" class="view">
+  <section id="view-ar" class="view" role="tabpanel" aria-labelledby="tab-ar">
     <div class="ar-container">
       <video id="camera-feed" autoplay muted playsinline style="display:none"></video>
       <div class="no-camera" id="no-camera">
         <span class="no-camera-icon">📷</span>
-        <div class="no-camera-title">Mode Exploration</div>
-        <div class="no-camera-text">Activez la caméra pour l'expérience AR. Les flèches directionnelles fonctionnent en permanence.</div>
-        <button class="btn-allow" id="btn-camera">Activer la caméra</button>
-        <button class="btn-nocam" id="btn-nocam">Continuer sans caméra</button>
-        <div class="no-camera-privacy">🔒 Le flux caméra ne quitte jamais votre téléphone : aucune image n'est enregistrée, stockée ni envoyée. Et tout fonctionne aussi sans caméra.</div>
+        <div class="no-camera-title" data-i18n="explore_mode">Mode Exploration</div>
+        <div class="no-camera-text" data-i18n="explore_text">Activez la caméra pour l'expérience AR. Les flèches directionnelles fonctionnent en permanence.</div>
+        <button type="button" class="btn-allow" id="btn-camera" data-i18n="enable_camera">Activer la caméra</button>
+        <button type="button" class="btn-nocam" id="btn-nocam" data-i18n="without_camera">Continuer sans caméra</button>
+        <div class="no-camera-privacy" data-i18n="camera_privacy">🔒 Le flux caméra ne quitte jamais votre téléphone : aucune image n'est enregistrée, stockée ni envoyée. Et tout fonctionne aussi sans caméra.</div>
       </div>
       <div class="compass-ring">
         <span class="compass-dir" id="cd-l2">—</span><span class="compass-sep">·</span>
@@ -236,294 +323,182 @@
         <span class="compass-dir" id="cd-r2">—</span>
       </div>
       <div class="ar-markers" id="ar-markers"></div>
-      <button id="btn-radar" aria-label="Basculer plan / caméra">🧭</button>
-      <button id="btn-cam-back" aria-label="Réactiver la caméra">📷</button>
+      <button type="button" id="btn-radar" aria-label="Afficher le plan" aria-pressed="false">🧭</button>
+      <button type="button" id="btn-cam-back" aria-label="Réactiver la caméra">📷</button>
+      <button type="button" id="ori-warning" aria-live="polite" data-i18n="compass_unavailable">🧭 Boussole indisponible — afficher le plan</button>
       <div id="radar-view" class="hidden">
-        <svg id="radar-svg" viewBox="0 0 300 300" role="img" aria-label="Plan des lieux autour de vous"></svg>
-        <div class="radar-hint">Le plan tourne avec vous — ce qui est devant est en haut · Tapez un lieu</div>
+        <svg id="radar-svg" viewBox="0 0 300 300" role="group" aria-label="Plan interactif des lieux autour de vous"></svg>
+        <div class="radar-hint" id="radar-hint" data-i18n="radar_north">Plan orienté nord — le nord est en haut · Choisissez un lieu</div>
       </div>
-      <div class="ar-disclaimer">⚠️ Directions approximatives</div>
+      <div class="ar-disclaimer">⚠️ <span data-i18n="directions_approx">Directions approximatives</span></div>
     </div>
     <div class="direction-strip" id="direction-strip"></div>
   </section>
 
-  <section id="view-map" class="view hidden">
+  <section id="view-map" class="view hidden" role="tabpanel" aria-labelledby="tab-map" aria-hidden="true">
     <div id="leaflet-map"></div>
-    <button class="btn-around" id="btn-around">📍 Autour de moi</button>
+    <button type="button" class="btn-around" id="btn-around" data-i18n="around_me">📍 Autour de moi</button>
   </section>
 
-  <section id="view-list" class="view hidden">
-    <div class="progress-line"><span class="progress-label" id="progress-label">0/30 histoires découvertes</span><div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div></div>
+  <section id="view-list" class="view hidden" role="tabpanel" aria-labelledby="tab-list" aria-hidden="true">
+    <div class="progress-line"><span class="progress-label" id="progress-label">0/5 histoires découvertes</span><div class="progress-track" id="progress-track" role="progressbar" aria-label="Histoires découvertes" aria-valuemin="0" aria-valuemax="5" aria-valuenow="0"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div></div>
     <div class="filter-bar" id="filter-bar"></div>
     <div id="poi-list"></div>
   </section>
 </div>
 
-<div id="modal" role="dialog" aria-modal="true" aria-labelledby="m-title">
-  <div class="modal-sheet">
+<div id="modal" role="dialog" aria-modal="true" aria-labelledby="m-title" aria-hidden="true" inert>
+  <div class="modal-sheet" tabindex="-1">
     <div class="modal-handle"></div>
     <div class="modal-header">
       <div class="modal-cat" id="m-cat"></div>
-      <div class="modal-title" id="m-title"></div>
+      <h2 class="modal-title" id="m-title"></h2>
       <div class="modal-addr">📍 <span id="m-addr"></span></div>
     </div>
     <div class="modal-body">
       <div class="modal-story" id="m-story"></div>
       <div class="modal-anecdote modal-dates">
-        <div class="modal-anecdote-label">📅 Repères</div>
+        <div class="modal-anecdote-label" data-i18n="key_dates">📅 Repères</div>
         <div class="modal-anecdote-text" id="m-dates"></div>
       </div>
+      <div class="modal-anecdote modal-figures" id="m-figures-block" hidden>
+        <div class="modal-anecdote-label" data-i18n="buried_people">★ Personnalités inhumées</div>
+        <div class="modal-anecdote-text" id="m-figures"></div>
+      </div>
       <div class="modal-anecdote">
-        <div class="modal-anecdote-label">Le saviez-vous ?</div>
+        <div class="modal-anecdote-label" data-i18n="did_you_know">Le saviez-vous ?</div>
         <div class="modal-anecdote-text" id="m-anecdote"></div>
       </div>
       <div class="modal-tags" id="m-tags"></div>
+      <a class="modal-website" id="m-website" href="#" target="_blank" rel="noopener noreferrer external" referrerpolicy="no-referrer" hidden>
+        <span data-i18n="place_site">🌐 Site du lieu</span>
+        <span class="modal-website-note" data-i18n="official_page">Page officielle ou institutionnelle</span>
+        <span class="modal-website-arrow" aria-hidden="true">↗</span>
+      </a>
     </div>
-    <div class="transport-panel" id="transport-panel" aria-label="Choisir un moyen d'accès">
-      <div class="transport-label">Moyen d'accès</div>
+    <div class="transport-panel" id="transport-panel" role="group" aria-labelledby="transport-label">
+      <div class="transport-label" id="transport-label" data-i18n="access_mode">Moyen d'accès</div>
       <div class="transport-row" id="transport-row"></div>
+      <div class="fly-taxi-offer" id="fly-taxi-offer" hidden>
+        <a class="fly-taxi-link" id="fly-taxi-link" href="https://fly-taxi.fr/contact/?utm_source=paris_invisible&amp;utm_medium=app&amp;utm_campaign=y_aller" target="_blank" rel="noopener noreferrer" aria-label="Réserver un trajet dans les Yvelines sur le site de F.L.Y Taxi">
+          <img class="fly-taxi-logo" src="assets/fly-taxi/logo-couleur.svg" alt="" aria-hidden="true">
+          <span class="fly-taxi-copy"><strong data-i18n="fly_book">Réserver avec F.L.Y Taxi</strong><small data-i18n="fly_yvelines">Pour cette destination dans le 78 · Service proposé par l'éditeur</small></span>
+          <span class="fly-taxi-arrow" aria-hidden="true">↗</span>
+        </a>
+        <button type="button" class="fly-contact-trigger" id="fly-contact-trigger" aria-haspopup="dialog" aria-controls="fly-contact-modal" data-i18n="fly_qr">Afficher le QR code contact F.L.Y Taxi</button>
+      </div>
     </div>
     <div class="modal-actions">
-      <button class="modal-btn modal-btn-audio" id="btn-audio">🔊 Écouter</button>
-      <button class="modal-btn modal-btn-secondary" id="btn-close">← Retour</button>
-      <button class="modal-btn modal-btn-primary" id="btn-go" aria-expanded="false">📍 Y aller</button>
+      <button type="button" class="modal-btn modal-btn-audio" id="btn-audio" data-i18n="listen">🔊 Écouter</button>
+      <button type="button" class="modal-btn modal-btn-secondary" id="btn-close" data-i18n="back">← Retour</button>
+      <button type="button" class="modal-btn modal-btn-primary" id="btn-go" aria-expanded="false" aria-controls="transport-panel" data-i18n="go">📍 Y aller</button>
     </div>
+  </div>
+</div>
+
+<div id="info-modal" role="dialog" aria-modal="true" aria-labelledby="info-title" aria-hidden="true" inert>
+  <div class="info-sheet" tabindex="-1">
+    <h2 class="info-title" id="info-title">Paris Invisible</h2>
+    <div class="info-version">Version 1.28.0 · Une création F.L.Y</div>
+    <div class="lang-switch info-language" role="group" aria-label="Langue · Language · Idioma · Sprache · Lingua · 言語 · 语言"><button type="button" class="lang-chip" data-lang="fr" aria-label="Français">FR</button><button type="button" class="lang-chip" data-lang="en" aria-label="English">EN</button><button type="button" class="lang-chip" data-lang="es" aria-label="Español">ES</button><button type="button" class="lang-chip" data-lang="de" aria-label="Deutsch">DE</button><button type="button" class="lang-chip" data-lang="it" aria-label="Italiano">IT</button><button type="button" class="lang-chip" data-lang="ja" aria-label="日本語">日本語</button><button type="button" class="lang-chip" data-lang="zh" aria-label="简体中文">中文</button></div>
+    <section class="info-section">
+      <h3 data-i18n="privacy_title">Vie privée, sans compte ni pistage publicitaire</h3>
+      <p data-i18n="privacy_body">La caméra n'est activée qu'à votre demande : aucune image n'est enregistrée ni transmise. La position et l'orientation servent au classement et aux directions, sans être stockées par Paris Invisible. Vos découvertes et votre préférence caméra restent uniquement sur cet appareil.</p>
+    </section>
+    <section class="info-section">
+      <h3 data-i18n="external_title">Services externes</h3>
+      <p data-i18n="external_body">L'ouverture de la carte charge les tuiles du service standard OpenStreetMap. Les itinéraires ouvrent Google Maps. Chaque fiche propose une page officielle ou institutionnelle du lieu, ouverte dans le navigateur uniquement après votre appui. Pour les destinations situées dans les Yvelines (78), le panneau « Y aller » propose aussi un bloc clairement identifié F.L.Y Taxi, service de l'éditeur, avec un QR contact local et un accès au site. Il n'apparaît pas pour les lieux parisiens.</p>
+    </section>
+    <section class="info-section">
+      <h3 data-i18n="access_title">Accès et achats</h3>
+      <p data-i18n="access_body">Le téléchargement gratuit comprend 5 histoires variées. Un achat définitif facultatif à 4,99 € ouvre les 44 lieux et peut être restauré via l’App Store ou Google Play. Aucun abonnement.</p>
+    </section>
+    <div class="info-links">
+      <a class="info-link" id="privacy-link" href="legal/confidentialite.html" data-i18n="privacy_link">Confidentialité</a>
+      <a class="info-link" href="legal/sources.html" data-i18n="sources_link">Sources & crédits</a>
+    </div>
+    <button type="button" class="info-close" id="btn-info-close" data-i18n="close">Fermer</button>
+  </div>
+</div>
+<div id="store-modal" role="dialog" aria-modal="true" aria-labelledby="store-title" aria-hidden="true" inert>
+  <div class="store-sheet" tabindex="-1">
+    <h2 class="info-title" id="store-title" data-i18n="my_access">Mes accès</h2>
+    <p class="store-intro" data-i18n="store_intro">L’application est gratuite avec 5 histoires variées, sans publicité. Un achat unique débloque les 44 lieux.</p>
+    <div class="store-base"><span aria-hidden="true">✓</span><div><strong data-i18n="base_title">5 histoires gratuites</strong><small data-i18n="base_detail">Tour Eiffel, Notre-Dame, Amélie Poulain, la plus petite maison de Paris et château de Monte-Cristo.</small></div></div>
+    <section class="store-product recommended" id="product-paris">
+      <div class="store-product-head"><h3 data-i18n="paris_pack">Paris complet</h3><span class="store-state" id="state-paris" data-i18n="discover">À débloquer</span></div>
+      <p data-i18n="paris_detail">Les 44 lieux, récits, repères, anecdotes et audios dans une version complète définitive.</p>
+      <button type="button" class="store-buy" id="buy-paris" disabled data-i18n="connecting_store">Connexion au Store…</button>
+    </section>
+    <div class="store-actions">
+      <button type="button" class="store-secondary" id="restore-purchases" data-i18n="restore">Restaurer mes achats</button>
+      <button type="button" class="store-secondary" id="store-close" data-i18n="close">Fermer</button>
+    </div>
+    <p class="store-note" id="store-note" role="status" data-i18n="store_note">Achat unique · Aucun abonnement · Paiement traité par Apple ou Google</p>
+  </div>
+</div>
+<div id="fly-contact-modal" role="dialog" aria-modal="true" aria-labelledby="fly-contact-title" aria-describedby="fly-contact-description" aria-hidden="true" inert>
+  <div class="fly-contact-card" tabindex="-1">
+    <img class="fly-contact-brand" src="assets/fly-taxi/logo-couleur.svg" alt="F.L.Y Taxi">
+    <h2 class="fly-contact-title" id="fly-contact-title" data-i18n="fly_contact">Contact F.L.Y Taxi</h2>
+    <p class="fly-contact-subtitle" id="fly-contact-description" data-i18n="fly_scan">Scannez avec un autre téléphone pour enregistrer directement la fiche contact.</p>
+    <img class="fly-contact-qr" src="assets/fly-taxi/contact-qr.png" width="300" height="300" alt="QR code de la fiche contact F.L.Y Taxi">
+    <div class="fly-contact-actions">
+      <a class="fly-contact-action" href="tel:+33607685542" data-i18n="call">☎ Appeler</a>
+      <a class="fly-contact-action" href="assets/fly-taxi/contact.vcf" download="F.L.Y-Taxi.vcf" data-i18n="add_contact">＋ Ajouter le contact</a>
+      <a class="fly-contact-action wide" href="https://fly-taxi.fr/contact/?utm_source=paris_invisible&amp;utm_medium=app&amp;utm_campaign=qr_contact" target="_blank" rel="noopener noreferrer" data-i18n="book_online">Réserver en ligne ↗</a>
+    </div>
+    <button type="button" class="fly-contact-close" id="fly-contact-close" data-i18n="back">Retour</button>
   </div>
 </div>
 <div class="toast" id="toast" role="status"></div>
 
-<!-- ANALYTICS — Microsoft Clarity (gratuit). Décommenter et remplacer VOTRE_ID_CLARITY
-     après avoir créé le projet sur clarity.microsoft.com :
-<script type="text/javascript">
-(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-})(window, document, "clarity", "script", "VOTRE_ID_CLARITY");
-</script> -->
+<script src="content/catalog.js"></script>
+<script src="i18n-extra.js"></script>
 <script src="core.js"></script>
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script src="vendor/leaflet/leaflet.js"></script>
 <script>
 'use strict';
 /* ============================================================
-   PARIS INVISIBLE — V1.13
-   PWA stable : lissage boussole, rendu throttlé, offline-ready
+   PARIS INVISIBLE — V1.28.0 STORE
+   App gratuite : 5 histoires sans publicité + achat complet définitif
    ============================================================ */
 
-// ---------- DATA ----------
-const POIS = [
-  {id:1,name:"Tour Eiffel",cat:"monument",icon:"🗼",lat:48.8584,lng:2.2945,addr:"Champ-de-Mars, 75007",
-   story:"Construite en 1889 pour l'Exposition universelle, elle devait être démolie après 20 ans. Gustave Eiffel la sauva en y installant une antenne de radiotélégraphie.",
-   anecdote:"La Tour grandit d'environ 15 cm en été : la chaleur dilate les 7 300 tonnes d'acier.",
-   dates:"Construite en 2 ans, 2 mois et 5 jours (1887-1889) pour l'Exposition universelle du centenaire de la Révolution, inaugurée le 31 mars 1889. Promise à la démolition en 1909, elle est sauvée par son antenne de radiotélégraphie. Avec 330 m, elle reste le plus haut monument de Paris.",
-   tags:["1889","Gustave Eiffel","Exposition universelle"]},
-  {id:2,name:"Notre-Dame de Paris",cat:"monument",icon:"⛪",lat:48.8530,lng:2.3499,addr:"Parvis Notre-Dame, 75004",
-   story:"Commencée en 1163, achevée 200 ans plus tard. Victor Hugo l'a sauvée avec son roman de 1831. Incendiée en 2019, elle renaît aujourd'hui.",
-   anecdote:"Les gargouilles ne sont pas médiévales : Viollet-le-Duc les a inventées au XIXe siècle.",
-   dates:"Première pierre posée en 1163 sous Maurice de Sully, gros œuvre achevé vers 1345. Sacre de Napoléon en 1804, grande restauration de Viollet-le-Duc de 1844 à 1864. Incendiée le 15 avril 2019, rouverte au public le 8 décembre 2024.",
-   tags:["1163","Victor Hugo","Incendie 2019"]},
-  {id:3,name:"Musée du Louvre",cat:"monument",icon:"🏛️",lat:48.8606,lng:2.3376,addr:"Rue de Rivoli, 75001",
-   story:"Forteresse militaire en 1190, résidence royale, puis musée public sous la Révolution. La Joconde y a été volée en 1911 — retrouvée deux ans plus tard.",
-   anecdote:"La pyramide compte 673 losanges de verre — pas 666 comme l'affirme Dan Brown.",
-   dates:"Forteresse de Philippe Auguste vers 1190, transformée en palais royal par François Ier au XVIe siècle. Le musée ouvre le 10 août 1793, en pleine Révolution. La pyramide de verre de Ieoh Ming Pei est inaugurée en 1989, pour le bicentenaire.",
-   tags:["Joconde","Pyramide","Forteresse 1190"]},
-  {id:4,name:"Arc de Triomphe",cat:"monument",icon:"🏟️",lat:48.8738,lng:2.2950,addr:"Place Charles de Gaulle, 75008",
-   story:"Commandé par Napoléon en 1806, achevé en 1836 — 15 ans après sa mort. Le Soldat inconnu y repose depuis 1921 sous une flamme perpétuelle.",
-   anecdote:"Sur les 558 noms de généraux gravés, ceux morts au combat sont soulignés.",
-   dates:"Commandé par Napoléon en 1806 au lendemain d'Austerlitz, inauguré seulement en 1836 sous Louis-Philippe. Le cercueil du Soldat inconnu y entre le 11 novembre 1920, mais n'est inhumé que le 28 janvier 1921 ; sa flamme est ravivée chaque soir depuis 1923.",
-   tags:["Napoléon","1806","Soldat inconnu"]},
-  {id:5,name:"Sacré-Cœur",cat:"monument",icon:"⛩️",lat:48.8867,lng:2.3431,addr:"35 Rue du Chevalier de la Barre, 75018",
-   story:"Construite entre 1875 et 1914 comme acte de réparation nationale après 1870. Son calcaire travertin blanchit sous la pluie.",
-   anecdote:"Sa cloche, la Savoyarde, pèse 19 tonnes — transportée depuis la Savoie à dos de bœufs.",
-   dates:"Première pierre en 1875, à l'initiative d'un vœu national après la guerre de 1870. Achevée en 1914, la basilique n'est consacrée qu'en 1919, une fois la Grande Guerre terminée. Son campanile abrite la Savoyarde, plus grosse cloche de France (1895).",
-   tags:["1875","Montmartre","Savoyarde"]},
-  {id:6,name:"Panthéon",cat:"monument",icon:"🏛️",lat:48.8462,lng:2.3461,addr:"Place du Panthéon, 75005",
-   story:"Église, mausolée républicain, église à nouveau, puis temple laïc : cinq changements de vocation selon les régimes politiques.",
-   anecdote:"En 1851, Foucault y suspendit un pendule de 67 mètres pour prouver la rotation de la Terre.",
-   dates:"Ancienne église Sainte-Geneviève voulue par Louis XV, bâtie par Soufflot — première pierre posée par Louis XV en 1764, achèvement en 1790. La Révolution en fait un panthéon national dès 1791. Foucault y suspend son pendule en 1851 ; Victor Hugo y entre en 1885, Marie Curie en 1995.",
-   tags:["Foucault 1851","Marie Curie"]},
-  {id:7,name:"Sainte-Chapelle",cat:"monument",icon:"🌟",lat:48.8554,lng:2.3450,addr:"8 Boulevard du Palais, 75001",
-   story:"Construite en 1248 par Saint Louis pour la Couronne d'Épines. Ses 1 113 scènes en vitraux transforment la chapelle en lanterne de lumière.",
-   anecdote:"Louis IX paya la relique deux fois plus cher que la construction de la chapelle entière.",
-   dates:"Élevée en un temps record entre 1242 et 1248 par Saint Louis pour abriter la Couronne d'épines, consacrée le 26 avril 1248. Ses 15 verrières du XIIIe siècle totalisent plus de 600 m² de vitraux, restaurés de 2008 à 2015.",
-   tags:["Saint Louis 1248","Vitraux"]},
-  {id:8,name:"Amélie Poulain — Café des 2 Moulins",cat:"cinema",icon:"🎬",lat:48.8843,lng:2.3325,addr:"15 Rue Lepic, 75018",
-   story:"Le café où Amélie travaille dans le film de Jeunet (2001) existe vraiment, rue Lepic. Lieu de pèlerinage mondial pour les fans.",
-   anecdote:"Jeunet a refusé de filmer les Champs-Élysées : il voulait un Paris de cinéma, pas une carte postale.",
-   dates:"Le film de Jean-Pierre Jeunet est tourné en 2000 dans ce café de la rue Lepic, et sort le 25 avril 2001. Triomphe mondial : plus de 30 millions d'entrées et 5 nominations aux Oscars en 2002. Le café, lui, existe depuis les années 1950.",
-   tags:["Jeunet 2001","Audrey Tautou"]},
-  {id:9,name:"Da Vinci Code — Pyramide du Louvre",cat:"cinema",icon:"🎬",lat:48.8607,lng:2.3358,addr:"Cour Napoléon, 75001",
-   story:"La scène d'ouverture du film (2006) se déroule au Louvre. Ron Howard obtint une autorisation rare pour filmer de nuit dans le musée fermé.",
-   anecdote:"Dan Brown affirme que la pyramide a 666 vitres. Faux : 673. Pei l'a rectifié lui-même.",
-   dates:"La pyramide de Pei est inaugurée en 1989. Dan Brown en fait le décor final de son roman en 2003 ; le film de Ron Howard y est tourné en 2005 et ouvre le Festival de Cannes en mai 2006.",
-   tags:["Ron Howard 2006","Tom Hanks"]},
-  {id:10,name:"Emily in Paris — Place de l'Estrapade",cat:"cinema",icon:"🎬",lat:48.8447,lng:2.3450,addr:"1 Place de l'Estrapade, 75005",
-   story:"L'immeuble d'Emily se trouve au 1 place de l'Estrapade. La boulangerie et le restaurant de Gabriel sont à deux pas, rue des Fossés Saint-Jacques.",
-   anecdote:"Des appartements de l'immeuble du tournage ont été mis en vente en 2026 — jusqu'à 3,8 millions d'euros.",
-   dates:"La série de Darren Star est lancée sur Netflix le 2 octobre 2020 et installe ses décors place de l'Estrapade dès la saison 1. Cinq saisons diffusées entre 2020 et décembre 2025 ont fait de cette placette du 5e un lieu de pèlerinage mondial.",
-   tags:["Netflix 2020","Quartier latin"]},
-  {id:11,name:"Midnight in Paris — Pont Alexandre III",cat:"cinema",icon:"🎬",lat:48.8637,lng:2.3133,addr:"Pont Alexandre III, 75008",
-   story:"Dans le film de Woody Allen (2011), Gil voyage dans le temps depuis ce pont construit pour l'Exposition de 1900.",
-   anecdote:"Allen rêvait de tourner à Paris depuis 40 ans. Le film lui valut l'Oscar du scénario.",
-   dates:"Le pont Alexandre III est construit de 1896 à 1900 pour l'Exposition universelle, sa première pierre posée par le tsar Nicolas II en 1896. Woody Allen y tourne à l'été 2010 la scène finale de son film, qui ouvre Cannes en mai 2011 et remporte l'Oscar du scénario en 2012.",
-   tags:["Woody Allen 2011","Oscar"]},
-  {id:12,name:"Inception — Pont de Bir-Hakeim",cat:"cinema",icon:"🎬",lat:48.8535,lng:2.2890,addr:"Pont de Bir-Hakeim, 75015",
-   story:"Nolan a choisi ce pont à deux niveaux pour la scène du miroir infini. Les scènes parisiennes ont été tournées en décors réels.",
-   anecdote:"C'est l'un des ponts les plus filmés de Paris : Inception, Last Tango, Peur sur la ville…",
-   dates:"Le pont de Bir-Hakeim est construit de 1903 à 1905 sous le nom de pont de Passy, rebaptisé en 1948 en mémoire de la bataille de 1942. Christopher Nolan y tourne en 2009 la scène du rêve d'Ariane ; le film sort en juillet 2010.",
-   tags:["Nolan 2010","Décors réels"]},
-  {id:13,name:"John Wick 4 — Escaliers du Sacré-Cœur",cat:"cinema",icon:"🎬",lat:48.8857,lng:2.3431,addr:"Escaliers du Sacré-Cœur, 75018",
-   story:"Une séquence d'action du film (2023) se déroule dans les escaliers de Montmartre, parmi plusieurs sites parisiens du tournage.",
-   anecdote:"Keanu Reeves est connu pour exécuter lui-même une grande partie de ses cascades.",
-   dates:"La rue Foyatier, ouverte en 1867 et baptisée en 1875, n'est qu'un escalier : 222 marches que le funiculaire longe depuis 1900. Le tournage du duel final s'y déroule à l'automne 2021, pour une sortie en France le 22 mars 2023.",
-   tags:["2023","Keanu Reeves"]},
-  {id:14,name:"Place de la Bastille",cat:"histoire",icon:"👑",lat:48.8533,lng:2.3692,addr:"Place de la Bastille, 75011",
-   story:"Le 14 juillet 1789, les Parisiens prennent la forteresse royale. Seulement 7 prisonniers libérés — mais la Révolution est lancée.",
-   anecdote:"La Colonne de Juillet commémore la Révolution de 1830, pas celle de 1789.",
-   dates:"La forteresse est bâtie de 1370 à 1383 sous Charles V, prise le 14 juillet 1789 puis démolie dans la foulée. La colonne de Juillet, érigée de 1835 à 1840, honore les révolutionnaires de 1830 — pas ceux de 1789.",
-   tags:["14 juillet 1789","Révolution"]},
-  {id:15,name:"Place de la Concorde",cat:"histoire",icon:"👑",lat:48.8656,lng:2.3212,addr:"Place de la Concorde, 75008",
-   story:"Ici furent guillotinés Louis XVI puis Marie-Antoinette en 1793. Plus de 1 300 exécutions pendant la Terreur.",
-   anecdote:"L'obélisque de Louxor a 3 300 ans : il a connu les pharaons avant la Révolution.",
-   dates:"Aménagée de 1755 à 1772 comme place Louis-XV par Gabriel, elle voit la guillotine s'installer en 1793 : Louis XVI le 21 janvier, Marie-Antoinette le 16 octobre. Rebaptisée Concorde en 1795, elle reçoit l'obélisque de Louxor en 1836.",
-   tags:["Louis XVI","Terreur","Obélisque"]},
-  {id:16,name:"Les Catacombes",cat:"histoire",icon:"💀",lat:48.8338,lng:2.3320,addr:"1 Av. Colonel Rol-Tanguy, 75014",
-   story:"300 km de galeries sous Paris, et les ossements de plus de 6 millions de Parisiens transférés au XVIIIe siècle.",
-   anecdote:"Des 'cataphiles' explorent les zones interdites. La police a une brigade dédiée : les 'cataflics'.",
-   dates:"Le transfert des ossements depuis les cimetières saturés commence en 1786, celui des Innocents en tête. L'ossuaire ouvre aux visiteurs dès 1809. Environ six millions de Parisiens y reposent, sur 1,5 km de parcours aménagé.",
-   tags:["6 millions","Cataphiles"]},
-  {id:17,name:"Place des Vosges",cat:"histoire",icon:"🗡️",lat:48.8553,lng:2.3644,addr:"Place des Vosges, 75003",
-   story:"La plus ancienne place de Paris (1612) fut le théâtre de duels illégaux pendant deux siècles.",
-   anecdote:"L'appartement de Victor Hugo au n°6 est un musée gratuit — l'un des rares à Paris.",
-   dates:"Construite de 1605 à 1612 sous Henri IV, inaugurée pour les fiançailles de Louis XIII — c'est la plus ancienne place monumentale de Paris. Place Royale à l'origine, elle est rebaptisée Vosges en 1800, en l'honneur du premier département à payer l'impôt.",
-   tags:["1612","Duels"]},
-  {id:18,name:"Pont Neuf",cat:"histoire",icon:"👑",lat:48.8573,lng:2.3413,addr:"Pont Neuf, 75001",
-   story:"Malgré son nom, c'est le plus vieux pont de Paris (1607). Henri IV le traversa à cheval avant son achèvement.",
-   anecdote:"En 1985, Christo emballa tout le pont dans 40 000 m² de tissu doré pendant 14 jours.",
-   dates:"Première pierre posée par Henri III en 1578, achevé sous Henri IV en 1607 : le « pont Neuf » est aujourd'hui le plus vieux pont de Paris. Premier pont sans maisons, il est classé monument historique dès 1889.",
-   tags:["Henri IV 1607","Christo 1985"]},
-  {id:19,name:"La plus petite maison de Paris",cat:"insolite",icon:"🕵️",lat:48.8680,lng:2.3567,addr:"39 Rue du Château-d'Eau, 75010",
-   story:"1,10 m de large, 5 m de haut, 3 m de profondeur : la plus petite bâtisse de Paris, coincée entre deux immeubles du 10e.",
-   anecdote:"Même 4 m² ont une valeur immobilière à Paris. L'adresse n'a jamais cessé d'abriter des commerces.",
-   dates:"Élevée au XIXe siècle au 39 rue du Château-d'Eau pour clore un passage disputé lors d'un litige d'héritage, la maison affiche environ 1,10 m de large pour 5 m de haut — un étage, une porte, une fenêtre.",
-   tags:["1,10 m","10e arrondissement"]},
-  {id:20,name:"Le Mur des 'Je t'aime'",cat:"insolite",icon:"❤️",lat:48.8868,lng:2.3353,addr:"Square Jehan Rictus, 75018",
-   story:"40 m² portant 'Je t'aime' en 250 langues, écrit 311 fois. Créé en 2000 après une collecte mondiale de déclarations.",
-   anecdote:"Les fragments rouges forment un cœur brisé volontairement incomplet.",
-   dates:"Créé en 2000 par Frédéric Baron et la calligraphe Claire Kito, square Jehan-Rictus aux Abbesses. Ses 612 carreaux de lave émaillée portent 311 « je t'aime » en plus de 250 langues, collectés depuis 1992.",
-   tags:["2000","250 langues"]},
-  {id:21,name:"Les Passages Couverts",cat:"insolite",icon:"🕯️",lat:48.8668,lng:2.3450,addr:"Passage du Grand Cerf, 75002",
-   story:"24 passages couverts subsistent sur les 150 du XIXe siècle — les premiers espaces commerciaux couverts au monde.",
-   anecdote:"Le Passage des Panoramas fut parmi les premiers lieux publics éclairés au gaz à Paris.",
-   dates:"Le passage du Caire, doyen des passages, ouvre en 1798 ; le passage des Panoramas suit en 1799 et la galerie Vivienne en 1823. Paris en compte près de 150 vers 1850 — l'arrivée des grands magasins, à partir des années 1860, n'en laissera qu'une vingtaine.",
-   tags:["XIXe","Premier éclairage gaz"]},
-  {id:22,name:"Promenade Plantée",cat:"insolite",icon:"🌿",lat:48.8505,lng:2.3688,addr:"Viaduc des Arts, 75012",
-   story:"L'ancienne voie ferrée surélevée est devenue le premier parc suspendu au monde. Les arcades abritent des artisans d'art.",
-   anecdote:"La High Line de New York s'est officiellement inspirée de la Promenade Plantée.",
-   dates:"La ligne ferroviaire Bastille-Vincennes, ouverte en 1859, ferme en 1969. Sur son viaduc, la Coulée verte est inaugurée en 1993 : 4,5 km plantés qui inspireront la High Line de New York, ouverte en 2009.",
-   tags:["Premier parc suspendu","High Line"]},
-  {id:23,name:"Moulin Rouge — Toulouse-Lautrec",cat:"artiste",icon:"🎨",lat:48.8841,lng:2.3324,addr:"82 Boulevard de Clichy, 75018",
-   story:"Ouvert en 1889, immortalisé par les affiches de Toulouse-Lautrec qui y venait presque chaque soir.",
-   anecdote:"Toulouse-Lautrec mesurait 1,52 m suite à deux fractures dans l'enfance. Il peignait sur des chevalets adaptés.",
-   dates:"Inauguré le 6 octobre 1889 par Oller et Zidler, l'année de la tour Eiffel. Toulouse-Lautrec en signe les affiches dès 1891. Détruit par un incendie en 1915, le cabaret rouvre en 1921 et fait tourner son moulin depuis.",
-   tags:["1889","Cancan"]},
-  {id:24,name:"Hemingway — La Coupole",cat:"artiste",icon:"🍷",lat:48.8430,lng:2.3274,addr:"108 Bd du Montparnasse, 75014",
-   story:"QG d'Hemingway, Picasso et Man Ray dès 1927. Dans 'Paris est une fête', Hemingway décrit ses années parisiennes comme les plus heureuses de sa vie.",
-   anecdote:"Il a écrit 'Paris est une fête' après avoir quitté la ville — comme si Paris ne prenait son sens qu'une fois perdu.",
-   dates:"La brasserie ouvre le 20 décembre 1927, en plein Montparnasse des Années folles. Hemingway, installé à Paris de 1921 à 1928, en fait l'un de ses repaires. Ses fresques Art déco sont inscrites aux monuments historiques en 1988.",
-   tags:["La Coupole","Années Folles"]},
-  {id:25,name:"Picasso — Bateau-Lavoir",cat:"artiste",icon:"🖼️",lat:48.8851,lng:2.3350,addr:"13 Place Émile Goudeau, 75018",
-   story:"Dans cet atelier collectif, Picasso peignit 'Les Demoiselles d'Avignon' en 1907 — la naissance du cubisme.",
-   anecdote:"Picasso brûlait parfois ses toiles pour se chauffer. Des œuvres ont disparu dans les flammes.",
-   dates:"Picasso s'installe dans cet ancien atelier de pianos en 1904 et y peint Les Demoiselles d'Avignon en 1907, acte de naissance du cubisme. Détruit par un incendie en 1970, le Bateau-Lavoir est reconstruit en 1978.",
-   tags:["1907","Cubisme"]},
-  {id:26,name:"Édith Piaf — Belleville",cat:"artiste",icon:"🎤",lat:48.8697,lng:2.3795,addr:"72 Rue de Belleville, 75020",
-   story:"Selon la légende, Piaf serait née sur ce trottoir. Elle fut découverte à 20 ans en chantant dans la rue.",
-   anecdote:"'Piaf' = 'moineau' en argot parisien. Surnom donné pour sa taille : 1,47 m.",
-   dates:"Édith Giovanna Gassion naît le 19 décembre 1915 — la légende la fait naître sur les marches du 72 rue de Belleville. Découverte en 1935 par Louis Leplée, la Môme s'éteint le 10 octobre 1963 ; le Tout-Paris suit son cortège au Père-Lachaise.",
-   tags:["Belleville","Moineau"]},
-  {id:27,name:"Victor Hugo — Place des Vosges",cat:"artiste",icon:"📚",lat:48.8547,lng:2.3647,addr:"6 Place des Vosges, 75004",
-   story:"Hugo vécut ici de 1832 à 1848. Il y termina Notre-Dame de Paris et travailla aux Misérables.",
-   anecdote:"Hugo écrivait debout, devant un pupitre, coiffé toujours du même vieux chapeau.",
-   dates:"Hugo habite au 6 place des Vosges de 1832 à 1848 et y écrit une large part des Misérables, publiés en 1862 pendant son exil. L'appartement devient musée en 1903, à l'initiative de Paul Meurice.",
-   tags:["1832-1848","Les Misérables"]},
-  {id:28,name:"Oscar Wilde — Père Lachaise",cat:"artiste",icon:"🌹",lat:48.8620,lng:2.3980,addr:"Père-Lachaise, 75020",
-   story:"Wilde mourut à Paris en 1900, ruiné et banni d'Angleterre. Sa tombe est un pèlerinage mondial.",
-   anecdote:"Sa dernière pique : 'Ce papier peint et moi, l'un de nous deux doit partir.'",
-   dates:"Wilde meurt ruiné à l'hôtel d'Alsace le 30 novembre 1900. Transféré au Père-Lachaise en 1909, il reçoit en 1912 son sphinx sculpté par Jacob Epstein — protégé depuis 2011 par une vitre contre les milliers de baisers au rouge à lèvres.",
-   tags:["1900","Père Lachaise"]},
-  {id:29,name:"Dalí — Espace Dalí Montmartre",cat:"artiste",icon:"👁️",lat:48.8835,lng:2.3368,addr:"11 Rue Poulbot, 75018",
-   story:"La plus grande collection permanente de Dalí en France : plus de 300 œuvres.",
-   anecdote:"Dalí promenait un ocelot en laisse dans Paris : 'Ce n'est qu'un chat peint en op art.'",
-   dates:"Salvador Dalí (1904-1989) fréquente Montmartre dès les années 1920, aux côtés des surréalistes. L'Espace Dalí ouvre en 1991 sur la place du Calvaire et présente plus de 300 œuvres, sculptures et gravures du maître catalan.",
-   tags:["Surréalisme","Ocelot"]},
-  {id:30,name:"Fontaine Stravinsky",cat:"artiste",icon:"🎭",lat:48.8600,lng:2.3515,addr:"Place Igor-Stravinsky, 75004",
-   story:"16 sculptures mobiles de Niki de Saint-Phalle et Tinguely, inaugurées en 1983 à côté de Beaubourg.",
-   anecdote:"Des riverains portèrent plainte en 1983 pour nuisances. Aujourd'hui : monument classé.",
-   dates:"Inaugurée en 1983 à côté du Centre Pompidou, la fontaine réunit 16 sculptures de Jean Tinguely et Niki de Saint Phalle. Elle rend hommage à Stravinsky, dont Le Sacre du printemps fit scandale à Paris en 1913. Restaurée en 2023-2024.",
-   tags:["1983","Tinguely"]},
-  {id:31,name:"Disneyland Paris",cat:"parc",icon:"🏰",lat:48.8722,lng:2.7758,addr:"Marne-la-Vallée (Seine-et-Marne), RER A Marne-la-Vallée–Chessy",
-   story:"Le premier parc Disney d'Europe et la première destination touristique privée du continent : deux parcs, le château de la Belle au Bois Dormant et son dragon, à 40 minutes de RER du centre de Paris.",
-   dates:"Ouvert le 12 avril 1992 sous le nom d'Euro Disney, rebaptisé Disneyland Paris en 1994. Le parc Walt Disney Studios ouvre le 16 mars 2002. Avec plus de 15 millions de visiteurs par an, c'est la première destination touristique privée d'Europe.",
-   anecdote:"Sous le château sommeille un dragon animatronique de 24 mètres — l'un des plus grands d'Europe. Et le château est le seul au monde inspiré non d'un vrai château, mais des enluminures des Très Riches Heures du duc de Berry.",
-   tags:["1992","Château","RER A"]},
-  {id:32,name:"Parc Astérix",cat:"parc",icon:"🛡️",lat:49.1358,lng:2.5728,addr:"Plailly (Oise), à 35 km au nord de Paris — navettes depuis Paris",
-   story:"Le village gaulois grandeur nature : le parc à thème 100 % français dédié à l'univers d'Uderzo et Goscinny, réputé pour ses grandes montagnes russes et son humour très hexagonal.",
-   dates:"Ouvert le 30 avril 1989, trois ans avant son voisin américain. Tonnerre de Zeus, l'une des plus grandes montagnes russes en bois d'Europe, arrive en 1997 (rénovée en 2022). Toutatis, lancé en 2023, est le coaster le plus rapide de France : 110 km/h.",
-   anecdote:"Par Toutatis ! Le parc a longtemps fermé chaque hiver… comme un vrai village gaulois qui hiverne. Il n'est ouvert en (presque) continu que depuis les années 2020.",
-   tags:["1989","Gaulois","Toutatis"]},
-  {id:33,name:"Château de Versailles",cat:"monument",icon:"👑",lat:48.8049,lng:2.1204,addr:"Place d'Armes, 78000 Versailles — RER C Versailles Château",
-   story:"La démesure du Roi-Soleil : 2 300 pièces, 800 hectares de jardins dessinés par Le Nôtre, et une galerie des Glaces où l'histoire du monde s'est écrite deux fois. Le monument le plus visité d'Île-de-France après Paris.",
-   dates:"Simple pavillon de chasse de Louis XIII en 1623, transformé par Louis XIV à partir de 1661. La cour s'y installe le 6 mai 1682. La galerie des Glaces est achevée en 1684 par Hardouin-Mansart. Le peuple ramène la famille royale à Paris le 6 octobre 1789 ; Louis-Philippe en fait un musée en 1837, et le traité de Versailles y est signé le 28 juin 1919, dans la galerie des Glaces.",
-   anecdote:"La galerie des Glaces aligne 357 miroirs — une provocation industrielle : Venise détenait alors le quasi-monopole du miroir, et Colbert débaucha ses maîtres verriers au péril de leur vie pour les faire fabriquer en France.",
-   tags:["1682","Roi-Soleil","Galerie des Glaces"]},
-  {id:34,name:"Château de Fontainebleau",cat:"monument",icon:"⚜️",lat:48.4021,lng:2.7004,addr:"Place du Général-de-Gaulle, 77300 Fontainebleau",
-   story:"« La vraie demeure des rois, la maison des siècles » disait Napoléon : le seul château habité par les souverains français pendant plus de sept siècles, des Capétiens au Second Empire, au cœur de sa forêt légendaire.",
-   dates:"Château médiéval refondé par François Ier à partir de 1528, embelli ensuite par presque tous les régimes. Napoléon y signe son abdication le 6 avril 1814 et fait ses adieux à la Garde dans la cour d'honneur le 20 avril. Classé au patrimoine mondial de l'UNESCO en 1981.",
-   anecdote:"L'escalier en fer-à-cheval, icône du château, n'était au départ qu'une rampe pour carrosses : elle permettait aux voitures de déposer leurs passagers à l'étage noble sans qu'ils posent le pied dans la boue.",
-   tags:["1528","François Ier","Napoléon"]},
-  {id:35,name:"Basilique Saint-Denis",cat:"monument",icon:"🪦",lat:48.9356,lng:2.3597,addr:"1 rue de la Légion d'Honneur, 93200 Saint-Denis — M13 Basilique",
-   story:"La nécropole des rois de France : plus de 40 souverains y reposent, de Dagobert à Louis XVIII, sous les voûtes du tout premier chef-d'œuvre de l'art gothique. Un livre d'histoire de France en gisants de marbre.",
-   dates:"Le chevet voulu par l'abbé Suger, consacré en 1144, fait basculer l'architecture dans le gothique — une première mondiale. Les tombeaux royaux sont profanés en 1793, les dépouilles jetées à la fosse commune, puis solennellement restituées en 1817. La flèche, démontée après une tempête à partir de 1846, fait l'objet d'un chantier de remontage en cours.",
-   anecdote:"En 2004, un petit cœur desséché a rejoint la crypte : celui de Louis XVII, l'enfant du Temple, authentifié en 2000 par comparaison ADN avec une mèche de cheveux de Marie-Antoinette.",
-   tags:["1144","Gothique","Nécropole royale"]},
-  {id:36,name:"Château de Vincennes",cat:"monument",icon:"⚔️",lat:48.8427,lng:2.4357,addr:"1 avenue de Paris, 94300 Vincennes — M1 Château de Vincennes",
-   story:"La grande forteresse des rois avant Versailles : un donjon d'environ 50 mètres — le plus haut donjon médiéval d'Europe — une enceinte colossale et une Sainte-Chapelle, aux portes de Paris.",
-   dates:"Résidence royale dès le XIIe siècle ; Charles V achève le donjon vers 1370. La Sainte-Chapelle, commencée en 1379, n'est achevée qu'en 1552. Devenu prison d'État, il enferme Fouquet, Sade et Mirabeau ; le duc d'Enghien y est fusillé en 1804, Mata Hari en 1917.",
-   anecdote:"Saint Louis rendait la justice sous un chêne du bois de Vincennes — l'image la plus célèbre de la monarchie « de proximité ». Sept siècles plus tard, le donjon servait encore : les archives secrètes de la France libre y furent un temps cachées.",
-   tags:["1370","Donjon","Charles V"]},
-  {id:37,name:"Château de Vaux-le-Vicomte",cat:"monument",icon:"🐿️",lat:48.5660,lng:2.7141,addr:"77950 Maincy, près de Melun",
-   story:"La répétition générale de Versailles : le trio Le Vau, Le Brun et Le Nôtre y invente pour Nicolas Fouquet le grand style français — château, décors et premier vrai jardin à la française en parfaite harmonie.",
-   dates:"Élevé de 1656 à 1661 pour Fouquet, surintendant des finances de Louis XIV. La fête somptueuse du 17 août 1661 éblouit le jeune roi… qui fait arrêter Fouquet le 5 septembre suivant et réquisitionne le trio d'artistes pour bâtir Versailles. Sauvé de la ruine par Alfred Sommier en 1875, le domaine est toujours privé.",
-   anecdote:"L'écureuil sculpté partout dans le château ? C'est l'emblème de Fouquet — « fouquet » signifie écureuil en patois angevin — avec sa devise trop ambitieuse : « Quo non ascendet », jusqu'où ne montera-t-il pas… Louis XIV a répondu à la question.",
-   tags:["1661","Fouquet","Le Nôtre"]},
-  {id:38,name:"Château de Saint-Germain-en-Laye",cat:"monument",icon:"🏰",lat:48.8979,lng:2.0937,addr:"Place Charles-de-Gaulle, 78100 Saint-Germain-en-Laye — RER A",
-   story:"Le château royal des Yvelines : berceau de Louis XIV, résidence de la cour avant Versailles, et sa grande terrasse de Le Nôtre qui domine toute la vallée de la Seine jusqu'à Paris.",
-   dates:"Forteresse de Louis VI vers 1124, reconstruite par François Ier à partir de 1539. Louis XIV y naît le 5 septembre 1638 ; la cour y réside jusqu'au grand départ pour Versailles en 1682. Napoléon III y fonde en 1862 le musée des Antiquités nationales, aujourd'hui musée d'Archéologie nationale. La grande terrasse de Le Nôtre (1669-1673) s'étire sur 2,4 km.",
-   anecdote:"Le château a hébergé un roi… d'Angleterre : Jacques II, chassé par la Glorieuse Révolution de 1688, y tint sa cour en exil jusqu'à sa mort en 1701. Son tombeau est toujours dans l'église d'en face.",
-   tags:["1638","Louis XIV","Le Nôtre"]}
-];
+// ---------- CATALOGUE SÉCURISÉ ----------
+// Métadonnées et sept fiches incluses : content/catalog.js.
+// Les deux packs sont chiffrés et ne sont déchiffrés qu'après vérification native de l'achat complet.
+const { CATALOG, BASE_CONTENT, PLACE_WEBSITES, PACKS } = PICatalog;
+const POIS = CATALOG;
 
 const CATEGORIES = [
-  {id:'all',label:'Tout'},
-  {id:'parc',label:'🎢 Parcs'},
-  {id:'monument',label:'🏛️ Monuments'},
-  {id:'cinema',label:'🎬 Cinéma'},
-  {id:'histoire',label:'👑 Histoire'},
-  {id:'insolite',label:'🕵️ Insolite'},
-  {id:'artiste',label:'🎨 Artistes'}
+  {id:'all',key:'all'},
+  {id:'parc',key:'parks_filter'},
+  {id:'monument',key:'monuments_filter'},
+  {id:'cinema',key:'cinema_filter'},
+  {id:'histoire',key:'history_filter'},
+  {id:'insolite',key:'hidden_filter'},
+  {id:'artiste',key:'artists_filter'}
 ];
 
 // ---------- STATE ----------
 const S = {
   userLat:48.8566, userLng:2.3522,
   heading:0, smoothHeading:0,
-  gpsActive:false, cameraActive:false, orientationGranted:false,
+  gpsActive:false, cameraWanted:false, cameraPending:false, cameraRequestId:0,
+  cameraDeclined:false, orientationGranted:false,
   realOriSeen:false, hasAbsolute:false,
   currentTab:'ar', filterCat:'all',
   selectedPoi:null, speaking:false,
   map:null, userMarker:null,
+  mapInitAttempts:0, mapUnavailableNotified:false,
   lastARRender:0, lastStripRender:0,
-  cachedPois:null, cachedPoisTime:0
+  cachedPois:null, cachedPoisTime:0,
+  flyReturnFocus:null, storeReturnFocus:null,
+  entitlements:{full:false,paris:false,parks:false},
+  storeOwnership:{full:false},
+  storeAvailable:false, storeBusy:false, storeProducts:{}, storePending:false,
+  lang:'fr', contentById:new Map(Object.entries(BASE_CONTENT).map(([id, value]) => [Number(id), value])),
+  loadedPacks:new Set()
 };
 
 // ---------- UTILS ----------
@@ -531,45 +506,109 @@ const $ = id => document.getElementById(id);
 // Fonctions pures : source unique dans core.js (testé par node --test)
 const { haversine, bearingTo, fmtDist, bearingDir, arrowChar, catLabel, esc,
         ribbon, smoothStep, arProjectClamped, addVisited,
-        walkMinutes, suggestedMode, TRANSPORT_MODES, mapsDirUrl, nearbyLabel } = PICore;
+        walkMinutes, suggestedMode, TRANSPORT_MODES, modeLabel, mapsDirUrl, isYvelinesDestination, nearbyLabel,
+        shouldRunCamera, radarPoint, niceRange, isSafeHttpsUrl,
+        PRODUCT_IDS, normalizeEntitlements, contentPackForPoi, canAccessPoi,
+        normLang, t, progressLabel } = PICore;
+
+const LANG_KEY = 'pi_lang';
+try { S.lang = normLang(localStorage.getItem(LANG_KEY) || navigator.language); }
+catch (error) { S.lang = normLang(navigator.language); }
+const T = key => t(S.lang, key);
+const localizedPoi = poi => {
+  const locales = S.contentById.get(Number(poi.id));
+  const content = locales ? (locales[S.lang] || locales.fr) : null;
+  return {
+    ...poi,
+    name: poi.names?.[S.lang] || poi.names?.fr || String(poi.id),
+    ...(content || {}),
+  };
+};
+const accessiblePois = () => POIS.filter(p => canAccessPoi(p, S.entitlements)).map(localizedPoi);
+
+function applyLanguage(){
+  document.documentElement.lang = S.lang === 'zh' ? 'zh-Hans' : S.lang;
+  document.querySelectorAll('[data-i18n]').forEach(element => { element.textContent = T(element.dataset.i18n); });
+  document.querySelectorAll('.lang-chip').forEach(chip => chip.classList.toggle('active', chip.dataset.lang === S.lang));
+  $('privacy-link').href = ({en:'legal/confidentialite-en.html',es:'legal/confidentialite-es.html',de:'legal/confidentialite-de.html',it:'legal/confidentialite-it.html',ja:'legal/confidentialite-ja.html',zh:'legal/confidentialite-zh.html'})[S.lang] || 'legal/confidentialite.html';
+  $('btn-store').setAttribute('aria-label', T('my_access'));
+  $('btn-radar').setAttribute('aria-label', radarIsOpen() ? T('show_camera') : T('show_plan'));
+  document.querySelector('.splash-version').textContent = `V1.28.0 · F.L.Y · ${T('directions_approx')}`;
+  document.querySelector('.info-version').textContent = `Version 1.28.0 · ${T('creation')} F.L.Y`;
+  invalidatePoisCache();
+  updateStoreUI();
+  updateAudioBtn();
+  updateRadarHint();
+  if (S.started) {
+    buildFilterBar();
+    renderList();
+    renderDirectionStrip();
+    updateProgress();
+    updateNearbyCount();
+    if ($('modal').classList.contains('open') && S.selectedPoi) {
+      const current = POIS.find(poi => poi.id === S.selectedPoi.id);
+      if (current) openPoi(localizedPoi(current));
+    }
+    if (S.map) {
+      S.map.remove();
+      S.map = null;
+      S.userMarker = null;
+      $('leaflet-map').replaceChildren();
+      if (S.currentTab === 'map') initMap();
+    }
+  }
+}
+function setLanguage(lang){
+  S.lang = normLang(lang);
+  try { localStorage.setItem(LANG_KEY, S.lang); } catch (error) {}
+  applyLanguage();
+}
+
+const visitedAccessibleCount = () => {
+  const allowed = new Set(accessiblePois().map(p => p.id));
+  return [...VISITED].filter(id => allowed.has(id)).length;
+};
 
 // ---------- PROGRESSION (rétention) ----------
 // POI découverts, persistés localement (localStorage peut être indisponible en navigation privée → try/catch)
 const VISITED_KEY = 'pi_visited';
 let VISITED = new Set();
-try { VISITED = new Set(JSON.parse(localStorage.getItem(VISITED_KEY) || '[]')); } catch(e){}
+try {
+  const stored = JSON.parse(localStorage.getItem(VISITED_KEY) || '[]');
+  const validIds = new Set(POIS.map(p => p.id));
+  if (Array.isArray(stored)) VISITED = new Set(stored.filter(id => validIds.has(id)));
+} catch(e){}
 function markVisited(id){
   if (!addVisited(VISITED, id)) return; // core.js — testé
   try { localStorage.setItem(VISITED_KEY, JSON.stringify([...VISITED])); } catch(e){}
   updateProgress();
-  if (VISITED.size === POIS.length) showToast('🏅 Les 30 histoires découvertes — Paris n\'a plus de secrets pour vous !');
-  // Nudge d'installation (Android) : une fois, après 3 fiches ouvertes = engagement réel.
-  // prompt() exige un geste utilisateur : ok, markVisited découle toujours d'un tap.
-  if (S.installPrompt && VISITED.size === 3){
-    const p = S.installPrompt; S.installPrompt = null;
-    p.prompt().catch(()=>{});
-  }
+  const total = accessiblePois().length;
+  if (visitedAccessibleCount() === total) showToast(T('all_discovered'));
 }
 function updateProgress(){
-  const n = VISITED.size, total = POIS.length;
-  $('progress-label').textContent = n + '/' + total + ' histoire' + (n>1?'s':'') + ' découverte' + (n>1?'s':'');
-  $('progress-fill').style.width = (n/total*100).toFixed(0) + '%';
+  const n = visitedAccessibleCount(), total = accessiblePois().length;
+  const label = progressLabel(n, total, S.lang);
+  $('progress-label').textContent = label;
+  $('progress-fill').style.width = total ? (n/total*100).toFixed(0) + '%' : '0%';
+  $('progress-track').setAttribute('aria-valuemax', String(total));
+  $('progress-track').setAttribute('aria-valuenow', String(n));
+  $('progress-track').setAttribute('aria-valuetext', label);
 }
 
-// Lien réservation F.L.Y Taxi — à remplacer par l'URL réelle (GBP, site ou page WhatsApp)
-const FLY_TAXI_URL = 'https://g.page/r/VOTRE-LIEN-GBP'; // TODO
-
 // Cache des distances (recalcul max 1×/2s ou si position change)
-function poisByDist(){
+function allPoisByDist(){
   const now = Date.now();
   if (S.cachedPois && now - S.cachedPoisTime < 2000) return S.cachedPois;
-  S.cachedPois = POIS.map(p => ({
+  S.cachedPois = POIS.map(localizedPoi).map(p => ({
     ...p,
     dist: haversine(S.userLat,S.userLng,p.lat,p.lng),
     bearing: bearingTo(S.userLat,S.userLng,p.lat,p.lng)
   })).sort((a,b)=>a.dist-b.dist);
   S.cachedPoisTime = now;
   return S.cachedPois;
+}
+function poisByDist(){
+  return allPoisByDist().filter(p => canAccessPoi(p, S.entitlements));
 }
 function invalidatePoisCache(){ S.cachedPoisTime = 0; }
 
@@ -585,25 +624,212 @@ function startApp(){
   try { if (localStorage.getItem(NOCAM_KEY) === '1') { S.cameraDeclined = true; } } catch(e){}
   if (S.cameraDeclined){ $('no-camera').classList.add('hidden'); $('btn-cam-back').classList.add('visible'); }
   $('splash').classList.add('hidden');
+  $('splash').setAttribute('aria-hidden', 'true');
+  $('splash').setAttribute('inert', '');
   $('app').classList.add('visible');
+  $('app').removeAttribute('aria-hidden');
+  $('app').removeAttribute('inert');
   initGPS();
-  requestCamera();
   requestOrientation();
+  // La caméra n'est plus demandée d'office : le panneau Mode Exploration
+  // laisse le choix (Activer / Continuer sans) — cohérence V1.13.
   buildFilterBar();
   renderDirectionStrip();
   renderList();
   updateProgress();
-  setTimeout(initMap, 300);
+  refreshStoreStatus();
   requestAnimationFrame(animationLoop);
   maybeStartDemo();
   // Préchauffe la liste des voix (souvent vide au premier getVoices())
   if ('speechSynthesis' in window) speechSynthesis.getVoices();
 }
 
+// ---------- ACHATS INTÉGRÉS NATIFS ----------
+const isNativeApp = Boolean(window.Capacitor && typeof window.Capacitor.isNativePlatform === 'function' && window.Capacitor.isNativePlatform());
+const storePlugin = () => isNativeApp && window.Capacitor && window.Capacitor.Plugins
+  ? window.Capacitor.Plugins.StoreEntitlements
+  : null;
+
+const bytesFromBase64 = value => Uint8Array.from(atob(value), character => character.charCodeAt(0));
+const hex = bytes => [...new Uint8Array(bytes)].map(value => value.toString(16).padStart(2, '0')).join('');
+
+function dropPackContent(pack){
+  const config = PACKS[pack];
+  if (!config) return;
+  config.ids.forEach(id => S.contentById.delete(id));
+  S.loadedPacks.delete(pack);
+}
+
+async function loadPackContent(pack, rawKey){
+  if (S.loadedPacks.has(pack)) return true;
+  const config = PACKS[pack];
+  if (!config || typeof rawKey !== 'string' || rawKey.length < 40 || !window.crypto?.subtle) return false;
+  try {
+    const response = await fetch(config.url, { cache: 'no-store', credentials: 'same-origin' });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const envelopeText = await response.text();
+    const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(envelopeText));
+    if (hex(digest) !== config.sha256) throw new Error('empreinte du pack invalide');
+    const envelope = JSON.parse(envelopeText);
+    if (envelope.version !== 1 || envelope.algorithm !== 'A256GCM') throw new Error('format du pack invalide');
+    const key = await crypto.subtle.importKey('raw', bytesFromBase64(rawKey), 'AES-GCM', false, ['decrypt']);
+    const decrypted = await crypto.subtle.decrypt(
+      { name: 'AES-GCM', iv: bytesFromBase64(envelope.iv), tagLength: 128 },
+      key,
+      bytesFromBase64(envelope.ciphertext),
+    );
+    const payload = JSON.parse(new TextDecoder().decode(decrypted));
+    if (payload.schema !== 1 || payload.pack !== pack || !Array.isArray(payload.ids)) throw new Error('charge utile invalide');
+    if (JSON.stringify(payload.ids) !== JSON.stringify(config.ids)) throw new Error('identifiants de pack incohérents');
+    for (const id of config.ids) {
+      const locales = payload.content?.[String(id)];
+      if (!locales || !PICatalog.LANGUAGES.every(lang => locales[lang]?.story && locales[lang]?.dates && locales[lang]?.anecdote)) {
+        throw new Error(`fiche ${id} incomplète`);
+      }
+      S.contentById.set(id, locales);
+    }
+    S.loadedPacks.add(pack);
+    return true;
+  } catch (error) {
+    dropPackContent(pack);
+    console.warn(`Pack ${pack} refusé`, error);
+    return false;
+  }
+}
+
+async function applyStoreStatus(result){
+  if (!result || typeof result !== 'object') return;
+  const access = normalizeEntitlements(result);
+  S.storeOwnership = {full:access.full};
+  S.storeAvailable = Boolean(result.available);
+  S.storePending = Boolean(result.pending);
+  S.storeProducts = {};
+  if (Array.isArray(result.products)) {
+    result.products.forEach(product => {
+      if (product && typeof product.id === 'string') S.storeProducts[product.id] = product;
+    });
+  }
+  const effective = {paris:false, parks:false};
+  let contentFailure = false;
+  for (const pack of ['paris', 'parks']) {
+    // Le produit commercial est unique ; l'achat complet autorise les deux
+    // conteneurs chiffrés internes (Paris et escapades/parcs).
+    if (!access[pack]) {
+      dropPackContent(pack);
+      continue;
+    }
+    const loaded = S.loadedPacks.has(pack) || await loadPackContent(pack, result[`${pack}Key`]);
+    effective[pack] = loaded;
+    if (!loaded) contentFailure = true;
+  }
+  S.entitlements = effective;
+  if (contentFailure) showToast(T('content_failed'));
+  if (S.selectedPoi && !canAccessPoi(S.selectedPoi, S.entitlements) && $('modal').classList.contains('open')) closeModal();
+  invalidatePoisCache();
+  updateStoreUI();
+  updateProgress();
+  if (S.started) {
+    renderList();
+    renderDirectionStrip();
+    renderRadar(true);
+    updateNearbyCount();
+  }
+  // Les marqueurs sont reconstruits pour ne jamais laisser un lieu verrouillé sur la carte.
+  if (S.map) {
+    S.map.remove();
+    S.map = null;
+    S.userMarker = null;
+    $('leaflet-map').replaceChildren();
+    if (S.currentTab === 'map') initMap();
+  }
+}
+
+function updateStoreUI(){
+  const owned = Boolean(S.storeOwnership.full);
+  const product = S.storeProducts[PRODUCT_IDS.full];
+  const button = $('buy-paris');
+  $('state-paris').textContent = owned ? T('acquired') : T('discover');
+  if (owned) {
+    button.textContent = T('acquired_extension');
+    button.disabled = true;
+  } else if (S.storeBusy) {
+    button.textContent = T('wait');
+    button.disabled = true;
+  } else if (S.storeAvailable && product && product.displayPrice) {
+    button.textContent = `${T('unlock_price')} · ${product.displayPrice}`;
+    button.disabled = false;
+  } else {
+    button.textContent = isNativeApp ? T('store_unavailable') : T('native_only');
+    button.disabled = true;
+  }
+  $('restore-purchases').disabled = S.storeBusy || !isNativeApp;
+  $('store-note').textContent = S.storePending
+    ? T('pending')
+    : T('store_note');
+  $('btn-store').textContent = owned ? '✓' : '🔓';
+}
+
+async function refreshStoreStatus({restore = false} = {}){
+  const plugin = storePlugin();
+  if (!plugin) { updateStoreUI(); return; }
+  try {
+    const result = restore ? await plugin.restore() : await plugin.getStatus();
+    await applyStoreStatus(result);
+    if (restore) showToast(T('restored'));
+  } catch (error) {
+    S.storeAvailable = false;
+    updateStoreUI();
+    if (restore) showToast(T('restore_failed'));
+  }
+}
+
+async function purchaseFull(){
+  const plugin = storePlugin();
+  const productId = PRODUCT_IDS.full;
+  if (!plugin || !productId || S.storeBusy) return;
+  S.storeBusy = true;
+  updateStoreUI();
+  try {
+    const result = await plugin.purchase({productId});
+    await applyStoreStatus(result);
+    showToast(result && result.pending ? T('purchase_pending') : T('unlocked'));
+  } catch (error) {
+    if (!error || error.code !== 'PURCHASE_CANCELLED') showToast(T('purchase_failed'));
+  } finally {
+    S.storeBusy = false;
+    updateStoreUI();
+  }
+}
+
+function openStore(){
+  S.storeReturnFocus = document.activeElement;
+  $('product-paris').classList.add('recommended');
+  $('store-modal').removeAttribute('inert');
+  $('store-modal').setAttribute('aria-hidden', 'false');
+  $('app').setAttribute('inert', '');
+  $('app').setAttribute('aria-hidden', 'true');
+  $('store-modal').classList.add('open');
+  syncCamera();
+  requestAnimationFrame(() => $('store-close').focus());
+}
+
+function closeStore(){
+  if (!$('store-modal').classList.contains('open')) return;
+  $('store-modal').classList.remove('open');
+  $('store-modal').setAttribute('aria-hidden', 'true');
+  $('store-modal').setAttribute('inert', '');
+  $('app').removeAttribute('inert');
+  $('app').removeAttribute('aria-hidden');
+  syncCamera();
+  const target = S.storeReturnFocus;
+  S.storeReturnFocus = null;
+  if (target && target.isConnected && typeof target.focus === 'function') target.focus();
+}
+
 // ---------- GPS avec gestion d'erreurs ----------
 function initGPS(){
   if (!navigator.geolocation){
-    $('gps-label').textContent = 'GPS non supporté';
+    $('gps-label').textContent = T('gps_unavailable');
     $('gps-dot').classList.add('error');
     updateNearbyCount();
     return;
@@ -614,6 +840,7 @@ function initGPS(){
       S.userLat = pos.coords.latitude;
       S.userLng = pos.coords.longitude;
       S.gpsActive = true;
+      stopDemoIfReal();
       if (moved > 10){
         invalidatePoisCache();
         // Rafraîchir distances/ordre affichés quand l'utilisateur se déplace
@@ -622,15 +849,15 @@ function initGPS(){
       }
       $('gps-dot').classList.remove('error');
       $('gps-dot').classList.add('active');
-      $('gps-label').textContent = pos.coords.accuracy < 30 ? 'Position précise' : 'Position approx.';
+      $('gps-label').textContent = pos.coords.accuracy < 30 ? T('precise_location') : T('approx_location');
       updateNearbyCount();
       updateUserOnMap();
     },
     err => {
       $('gps-dot').classList.add('error');
-      $('gps-label').textContent = err.code === 1 ? 'GPS refusé · simulé' : 'GPS indispo · simulé';
+      $('gps-label').textContent = err.code === 1 ? T('gps_denied') : T('gps_unavailable');
       updateNearbyCount();
-      if (err.code === 1) showToast('Localisation refusée — position simulée au centre de Paris');
+      if (err.code === 1) showToast(T('location_denied_toast'));
     },
     {enableHighAccuracy:true, maximumAge:3000, timeout:15000}
   );
@@ -638,53 +865,116 @@ function initGPS(){
 function updateNearbyCount(){
   const sorted = poisByDist();
   const n = sorted.filter(p=>p.dist<5000).length;
-  $('nearby-count').textContent = nearbyLabel(n, sorted[0] ? sorted[0].dist : 0);
+  $('nearby-count').textContent = nearbyLabel(n, sorted[0] ? sorted[0].dist : 0, S.lang);
 }
 
 // ---------- CAMERA ----------
 const NOCAM_KEY = 'pi_nocam';
+function radarIsOpen(){
+  return !$('radar-view').classList.contains('hidden');
+}
+function cameraCanRun(){
+  return shouldRunCamera({
+    cameraWanted:S.cameraWanted,
+    cameraDeclined:S.cameraDeclined,
+    currentTab:S.currentTab,
+    documentHidden:document.hidden,
+    radarOpen:radarIsOpen(),
+    modalOpen:$('modal').classList.contains('open') || $('info-modal').classList.contains('open') || $('store-modal').classList.contains('open') || $('fly-contact-modal').classList.contains('open')
+  });
+}
+function stopStream(stream){
+  if (stream && typeof stream.getTracks === 'function') stream.getTracks().forEach(t => t.stop());
+}
+function resetCameraButton(){
+  const b = $('btn-camera');
+  b.disabled = false;
+  b.removeAttribute('aria-busy');
+  b.textContent = T('enable_camera');
+}
 function declineCamera(){
   S.cameraDeclined = true;
+  S.cameraWanted = false;
   try { localStorage.setItem(NOCAM_KEY, '1'); } catch(e){}
+  stopCamera();
   $('no-camera').classList.add('hidden');
   $('btn-cam-back').classList.add('visible');
 }
 function reenableCamera(){
   S.cameraDeclined = false;
+  S.cameraWanted = true;
   try { localStorage.removeItem(NOCAM_KEY); } catch(e){}
   $('btn-cam-back').classList.remove('visible');
-  requestCamera();
+  if (radarIsOpen()) toggleRadar();
+  else requestCamera();
 }
 function requestCamera(){
-  if (S.cameraDeclined) return; // choix explicite de l'utilisateur — on ne redemande pas
-  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) return;
+  S.cameraWanted = true;
+  if (!cameraCanRun()) return;
+  const video = $('camera-feed');
+  if (S.cameraPending || video.srcObject) return; // double-tap et reprise simultanée
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
+    S.cameraWanted = false;
+    video.style.display = 'none';
+    $('no-camera').classList.remove('hidden');
+    showToast(T('camera_unsupported'));
+    return;
+  }
+  const requestId = ++S.cameraRequestId;
+  S.cameraPending = true;
+  $('btn-camera').disabled = true;
+  $('btn-camera').setAttribute('aria-busy', 'true');
+  $('btn-camera').textContent = 'Activation…';
   navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'},audio:false})
     .then(stream => {
-      const v = $('camera-feed');
-      v.srcObject = stream;
-      v.style.display = 'block';
+      // La permission peut arriver après un changement d'onglet, une mise en
+      // arrière-plan, l'ouverture du radar ou un refus : ne jamais attacher ce flux.
+      if (requestId !== S.cameraRequestId){
+        stopStream(stream);
+        return;
+      }
+      if (!cameraCanRun()){
+        stopStream(stream);
+        S.cameraPending = false;
+        resetCameraButton();
+        return;
+      }
+      S.cameraPending = false;
+      resetCameraButton();
+      video.srcObject = stream;
+      video.style.display = 'block';
       $('no-camera').classList.add('hidden');
-      S.cameraActive = true;
+      $('btn-cam-back').classList.remove('visible');
     })
     .catch(() => {
-      $('camera-feed').style.display = 'none';
+      if (requestId !== S.cameraRequestId) return;
+      S.cameraPending = false;
+      S.cameraWanted = false;
+      resetCameraButton();
+      video.style.display = 'none';
       $('no-camera').classList.remove('hidden');
-      S.cameraActive = false; // l'utilisateur peut réessayer via le bouton
+      showToast(T('camera_unavailable'));
     });
 }
 // Économie de batterie + vie privée : caméra coupée hors de l'onglet AR
 function stopCamera(){
+  // Invalide également une permission encore en attente. Si elle aboutit plus
+  // tard, requestCamera arrêtera immédiatement le flux devenu obsolète.
+  S.cameraRequestId += 1;
+  S.cameraPending = false;
+  resetCameraButton();
   const v = $('camera-feed');
   if (v.srcObject){
-    v.srcObject.getTracks().forEach(t => t.stop());
+    stopStream(v.srcObject);
     v.srcObject = null;
   }
+  v.style.display = 'none';
 }
 function syncCamera(){
-  if (S.currentTab === 'ar' && !document.hidden){
-    if (S.cameraActive && !$('camera-feed').srcObject) requestCamera();
+  if (cameraCanRun()){
+    if (!$('camera-feed').srcObject && !S.cameraPending) requestCamera();
   } else {
-    stopCamera();
+    stopCamera(); // hors AR, en arrière-plan, ou plan ouvert : indicateur caméra éteint
   }
 }
 
@@ -710,17 +1000,24 @@ function screenAngle(){
 }
 function setHeading(h){
   S.heading = ((h % 360) + 360) % 360;
-  S.realOriSeen = true; // coupe le mode démo dès qu'un vrai capteur émet
+  if (!S.realOriSeen){
+    S.realOriSeen = true;
+    hideOriWarning();
+    updateRadarHint();
+  } // coupe démo et bandeau
 }
 function handleOriAbs(e){ // Android : cap absolu (prioritaire)
-  if (e.alpha === null) return;
+  if (typeof e.alpha !== 'number') return;
   S.hasAbsolute = true;
   setHeading(360 - e.alpha + screenAngle());
 }
 function handleOri(e){
-  if (e.webkitCompassHeading !== undefined){ setHeading(e.webkitCompassHeading + screenAngle()); return; } // iOS
+  if (typeof e.webkitCompassHeading === 'number'){ setHeading(e.webkitCompassHeading + screenAngle()); return; } // iOS
   if (S.hasAbsolute) return; // ne pas laisser l'alpha relatif écraser le cap absolu
-  if (e.alpha !== null) setHeading(360 - e.alpha + screenAngle()); // fallback relatif
+  // L'événement deviceorientation classique peut être relatif à un repère
+  // arbitraire. Il n'est utilisable comme boussole que si le navigateur le
+  // marque explicitement absolu.
+  if (e.absolute === true && typeof e.alpha === 'number') setHeading(360 - e.alpha + screenAngle());
 }
 
 // ---------- BOUCLE D'ANIMATION (60fps lissé, rendu throttlé) ----------
@@ -730,7 +1027,7 @@ function animationLoop(ts){
   if (S.currentTab === 'ar' && ts - S.lastARRender > 100){
     updateCompass();
     renderARMarkers();
-  renderRadar();
+    renderRadar();
     S.lastARRender = ts;
   }
   // Strip : rendu max 2×/s (juste les flèches)
@@ -742,7 +1039,7 @@ function animationLoop(ts){
 }
 function updateCompass(){
   // Ruban HUD (core.js, testé) : en tournant à droite, la nouvelle direction entre par la droite
-  const [l2, l1, cur, r1, r2] = ribbon(S.smoothHeading);
+  const [l2, l1, cur, r1, r2] = ribbon(S.smoothHeading, S.lang);
   $('cd-l2').textContent = l2;
   $('cd-l1').textContent = l1;
   $('cd-cur').textContent = cur;
@@ -770,14 +1067,16 @@ function renderARMarkers(){
   visible.forEach(({p, x, y}, id) => {
     let el = c.querySelector(`.ar-marker[data-id="${id}"]`);
     if (!el){
-      el = document.createElement('div');
+      el = document.createElement('button');
+      el.type = 'button';
       el.className = 'ar-marker';
       el.dataset.id = id;
       el.innerHTML = `<div class="marker-bubble"><span class="marker-icon">${p.icon}</span><div><div class="marker-name">${esc(p.name)}</div><div class="marker-dist"></div></div></div><div class="marker-line"></div><div class="marker-dot"></div>`;
       el.addEventListener('click', () => openPoiById(id));
       c.appendChild(el);
     }
-    el.querySelector('.marker-dist').textContent = `${fmtDist(p.dist)} · ${bearingDir(p.bearing)}`;
+    el.setAttribute('aria-label', `${p.name}, ${fmtDist(p.dist)}, ${bearingDir(p.bearing, S.lang)}`);
+    el.querySelector('.marker-dist').textContent = `${fmtDist(p.dist)} · ${bearingDir(p.bearing, S.lang)}`;
     el.style.left = (x*100).toFixed(1) + '%';
     el.style.top = (y*100).toFixed(1) + '%';
   });
@@ -790,10 +1089,11 @@ function renderDirectionStrip(){
   const frag = document.createDocumentFragment();
   pois.forEach(p => {
     const rel = ((p.bearing - S.smoothHeading) + 360) % 360;
-    const card = document.createElement('div');
+    const card = document.createElement('button');
+    card.type = 'button';
     card.className = 'dir-card' + (p.dist<500 ? ' nearby' : '');
     card.dataset.bearing = p.bearing;
-    card.innerHTML = `<span class="dir-arrow">${arrowChar(rel)}</span><div class="dir-card-info"><div class="dir-card-name">${p.icon} ${esc(p.name)}</div><div class="dir-card-meta">${fmtDist(p.dist)} · ${bearingDir(p.bearing)}</div></div>`;
+    card.innerHTML = `<span class="dir-arrow">${arrowChar(rel)}</span><div class="dir-card-info"><div class="dir-card-name">${p.icon} ${esc(p.name)}</div><div class="dir-card-meta">${fmtDist(p.dist)} · ${bearingDir(p.bearing, S.lang)}</div></div>`;
     card.addEventListener('click', () => openPoi(p));
     frag.appendChild(card);
   });
@@ -811,25 +1111,43 @@ function updateStripArrows(){
 }
 
 // ---------- MAP ----------
+const MAP_MAX_RETRIES = 8;
+function showMapFallback(){
+  const fallback = document.createElement('div');
+  fallback.className = 'map-fallback';
+  fallback.setAttribute('role', 'status');
+  fallback.textContent = T('map_fallback');
+  $('leaflet-map').replaceChildren(fallback);
+  $('btn-around').hidden = true;
+  if (!S.mapUnavailableNotified){
+    S.mapUnavailableNotified = true;
+    showToast(T('map_unavailable'));
+  }
+}
 function initMap(){
-  if (S.map || typeof L === 'undefined') {
-    if (typeof L === 'undefined') setTimeout(initMap, 500); // retry si Leaflet pas encore chargé
+  if (S.map) return;
+  if (typeof L === 'undefined') {
+    S.mapInitAttempts += 1;
+    if (S.mapInitAttempts <= MAP_MAX_RETRIES) setTimeout(initMap, 500);
+    else showMapFallback();
     return;
   }
   try {
+    $('btn-around').hidden = false;
     S.map = L.map('leaflet-map',{zoomControl:false}).setView([48.8566,2.3522],13);
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{
-      attribution:'© OpenStreetMap, © CARTO', maxZoom:19
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{
+      attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>',
+      maxZoom:19, crossOrigin:true, updateWhenIdle:true, keepBuffer:1
     }).addTo(S.map);
     L.control.zoom({position:'topright'}).addTo(S.map);
 
-    const catColors = {monument:'#4c7ac9',cinema:'#c94c4c',histoire:'#c9a84c',insolite:'#9b4cc9',artiste:'#4cc97a'};
-    POIS.forEach(p => {
-      const ic = L.divIcon({className:'',html:`<div class="poi-marker-icon" style="width:32px;height:32px;border-color:${catColors[p.cat]}">${p.icon}</div>`,iconSize:[32,32],iconAnchor:[16,16]});
+    const catColors = {monument:'#4c7ac9',cinema:'#c94c4c',histoire:'#c9a84c',insolite:'#9b4cc9',artiste:'#4cc97a',parc:'#3fb8b5'};
+    accessiblePois().forEach(p => {
+      const ic = L.divIcon({className:'',html:`<div class="poi-marker-icon" style="width:32px;height:32px;border-color:${catColors[p.cat] || '#c9a84c'}">${p.icon}</div>`,iconSize:[32,32],iconAnchor:[16,16]});
       const m = L.marker([p.lat,p.lng],{icon:ic}).addTo(S.map);
       m.on('click', () => {
         const d = haversine(S.userLat,S.userLng,p.lat,p.lng);
-        m.bindPopup(`<div class="popup-title">${p.icon} ${esc(p.name)}</div><div class="popup-dist">${fmtDist(d)}</div><span class="popup-btn" data-poi="${p.id}">Découvrir</span>`).openPopup();
+        m.bindPopup(`<div class="popup-title">${p.icon} ${esc(p.name)}</div><div class="popup-dist">${fmtDist(d)}</div><button type="button" class="popup-btn" data-poi="${p.id}">${esc(T('discover_action'))}</button>`).openPopup();
         setTimeout(() => {
           document.querySelectorAll('.popup-btn[data-poi]').forEach(b => {
             b.onclick = () => openPoiById(parseInt(b.dataset.poi));
@@ -839,7 +1157,8 @@ function initMap(){
     });
     updateUserOnMap();
   } catch(e){
-    showToast('Erreur de chargement de la carte');
+    S.map = null;
+    showMapFallback();
   }
 }
 function updateUserOnMap(){
@@ -851,21 +1170,23 @@ function updateUserOnMap(){
 function centerOnUser(){
   if (!S.map) return;
   S.map.setView([S.userLat,S.userLng],15,{animate:true});
-  showToast(S.gpsActive ? 'Centré sur votre position' : 'Position simulée (centre de Paris)');
+  showToast(S.gpsActive ? T('centered') : T('simulated_position'));
 }
 function openPoiById(id){
   const p = POIS.find(x=>x.id===id);
-  if (p) openPoi({...p, dist:haversine(S.userLat,S.userLng,p.lat,p.lng), bearing:bearingTo(S.userLat,S.userLng,p.lat,p.lng)});
+  if (p) openPoi({...localizedPoi(p), dist:haversine(S.userLat,S.userLng,p.lat,p.lng), bearing:bearingTo(S.userLat,S.userLng,p.lat,p.lng)});
 }
 
 // ---------- FILTER + LIST ----------
 function buildFilterBar(){
   const bar = $('filter-bar');
+  bar.replaceChildren();
   CATEGORIES.forEach(cat => {
     const btn = document.createElement('button');
-    btn.className = 'filter-chip' + (cat.id==='all' ? ' active':'');
+    btn.type = 'button';
+    btn.className = 'filter-chip' + (cat.id===S.filterCat ? ' active':'');
     btn.dataset.cat = cat.id;
-    btn.textContent = cat.label;
+    btn.textContent = T(cat.key);
     btn.addEventListener('click', () => filterList(cat.id));
     bar.appendChild(btn);
   });
@@ -876,61 +1197,109 @@ function filterList(cat){
   renderList();
 }
 function renderList(){
-  const pois = poisByDist().filter(p=>S.filterCat==='all'||p.cat===S.filterCat);
+  const pois = allPoisByDist().filter(p=>S.filterCat==='all'||p.cat===S.filterCat);
   const frag = document.createDocumentFragment();
   pois.forEach(p => {
-    const card = document.createElement('div');
-    card.className = 'poi-card';
-    const visitedBadge = VISITED.has(p.id) ? '<span class="poi-visited-badge">✓ découvert</span>' : '';
-    card.innerHTML = `<div class="poi-card-icon">${p.icon}</div><div class="poi-card-body"><div class="poi-card-name">${esc(p.name)}${visitedBadge}</div><div class="poi-card-teaser">${esc(p.story)}</div><div class="poi-card-footer"><span class="poi-cat-badge cat-${p.cat}">${catLabel(p.cat)}</span><span class="poi-dist">${fmtDist(p.dist)}</span></div></div>`;
-    card.addEventListener('click', () => openPoi(p));
+    const card = document.createElement('button');
+    card.type = 'button';
+    const pack = contentPackForPoi(p);
+    const locked = !canAccessPoi(p, S.entitlements);
+    card.className = 'poi-card' + (locked ? ' locked' : '');
+    const visitedBadge = !locked && VISITED.has(p.id) ? `<span class="poi-visited-badge">${esc(T('visited'))}</span>` : '';
+    const lockBadge = locked ? `<span class="poi-lock-badge">🔒 ${esc(T('pack_paris_badge'))}</span>` : '';
+    const teaser = locked
+      ? (p.teasers?.[S.lang] || T('locked_paris'))
+      : p.story;
+    card.innerHTML = `<div class="poi-card-icon">${locked ? '🔒' : p.icon}</div><div class="poi-card-body"><div class="poi-card-name">${esc(p.name)}${visitedBadge}${lockBadge}</div><div class="poi-card-teaser">${esc(teaser || '')}</div><div class="poi-card-footer"><span class="poi-cat-badge cat-${p.cat}">${catLabel(p.cat, S.lang)}</span><span class="poi-dist">${fmtDist(p.dist)}</span></div></div>`;
+    card.setAttribute('aria-label', locked ? `${p.name}, ${T('locked_label')}` : `${p.name}, ${fmtDist(p.dist)}`);
+    card.addEventListener('click', () => locked ? openStore() : openPoi(p));
     frag.appendChild(card);
   });
-  // Carte F.L.Y discrète en fin de liste — masquée tant que l'URL n'est pas configurée
-  // (évite de shipper un lien mort si le TODO est oublié)
-  if (!FLY_TAXI_URL.includes('VOTRE-LIEN')){
-    const fly = document.createElement('div');
-    fly.className = 'fly-card';
-    fly.innerHTML = `<div class="fly-card-title">Une création F.L.Y</div><div class="fly-card-text">Besoin d'un transfert aéroport ou d'une course dans les Yvelines ?<br><a href="${FLY_TAXI_URL}" target="_blank" rel="noopener">F.L.Y Taxi — réserver →</a></div>`;
-    frag.appendChild(fly);
-  }
   $('poi-list').replaceChildren(frag);
 }
 
 // ---------- TABS ----------
-function switchTab(t){
+function switchTab(t, focusTab = false){
   S.currentTab = t;
   document.querySelectorAll('.tab').forEach(x=>{
     const on = x.dataset.tab===t;
     x.classList.toggle('active',on);
     x.setAttribute('aria-selected', on ? 'true' : 'false');
+    x.tabIndex = on ? 0 : -1;
   });
-  ['ar','map','list'].forEach(v=>$('view-'+v).classList.toggle('hidden',v!==t));
-  if (t==='map' && S.map) setTimeout(()=>S.map.invalidateSize(),100);
+  ['ar','map','list'].forEach(v=>{
+    const view = $('view-'+v), hidden = v!==t;
+    view.classList.toggle('hidden', hidden);
+    view.setAttribute('aria-hidden', hidden ? 'true' : 'false');
+  });
+  if (t==='map'){
+    if (S.map) setTimeout(()=>S.map.invalidateSize(),100);
+    else setTimeout(initMap,0);
+  }
   if (t==='list') renderList();
   if (t==='ar') renderDirectionStrip();
   syncCamera();
+  if (focusTab){
+    const active = document.querySelector(`.tab[data-tab="${t}"]`);
+    if (active) active.focus();
+  }
 }
 
 // ---------- MODAL ----------
 function openPoi(p){
+  if (!canAccessPoi(p, S.entitlements)) {
+    openStore();
+    return;
+  }
   stopAudio();
+  if (!$('modal').classList.contains('open')) S.modalReturnFocus = document.activeElement;
   S.selectedPoi = p;
   $('transport-panel').classList.remove('open');
   $('btn-go').setAttribute('aria-expanded', 'false');
+  $('fly-taxi-offer').hidden = !isYvelinesDestination(p);
   markVisited(p.id);
-  $('m-cat').textContent = p.icon+' '+catLabel(p.cat).toUpperCase();
+  $('m-cat').textContent = p.icon+' '+catLabel(p.cat, S.lang).toUpperCase();
   $('m-title').textContent = p.name;
   $('m-addr').textContent = p.addr;
   $('m-story').textContent = p.story;
   $('m-dates').textContent = p.dates;
+  const figures = Array.isArray(p.figures) ? p.figures : [];
+  $('m-figures').textContent = figures.join(' · ');
+  $('m-figures-block').hidden = figures.length === 0;
   $('m-anecdote').textContent = p.anecdote;
   $('m-tags').innerHTML = p.tags.map(t=>`<span class="modal-tag">${esc(t)}</span>`).join('');
+  const candidateWebsite = PLACE_WEBSITES[p.id];
+  const website = isSafeHttpsUrl(candidateWebsite) ? candidateWebsite : '';
+  const websiteLink = $('m-website');
+  websiteLink.hidden = !website;
+  if (website){
+    websiteLink.href = website;
+    websiteLink.setAttribute('aria-label', `${T('official_page')} — ${p.name}`);
+  } else {
+    websiteLink.removeAttribute('href');
+    websiteLink.removeAttribute('aria-label');
+  }
+  $('modal').removeAttribute('inert');
+  $('modal').setAttribute('aria-hidden', 'false');
+  $('app').setAttribute('inert', '');
+  $('app').setAttribute('aria-hidden', 'true');
   $('modal').classList.add('open');
+  syncCamera();
+  requestAnimationFrame(() => $('btn-close').focus());
 }
 function closeModal(){
+  if (!$('modal').classList.contains('open')) return;
   $('modal').classList.remove('open');
+  $('modal').setAttribute('aria-hidden', 'true');
+  $('modal').setAttribute('inert', '');
+  $('app').removeAttribute('inert');
+  $('app').removeAttribute('aria-hidden');
   stopAudio();
+  syncCamera();
+  const target = S.modalReturnFocus;
+  S.modalReturnFocus = null;
+  if (target && target.isConnected && typeof target.focus === 'function') target.focus();
+  else if (S.currentTab === 'ar') $('btn-radar').focus();
 }
 // ---------- MOYENS D'ACCÈS (core.js — testé) ----------
 function toggleTransportPanel(){
@@ -943,16 +1312,20 @@ function toggleTransportPanel(){
 function buildTransportPanel(){
   const p = S.selectedPoi;
   if (!p) return;
-  const dist = haversine(S.lat, S.lng, p.lat, p.lng);
+  $('fly-taxi-offer').hidden = !isYvelinesDestination(p);
+  const dist = haversine(S.userLat, S.userLng, p.lat, p.lng);
   const suggested = suggestedMode(dist);
   const row = $('transport-row');
   row.replaceChildren();
   TRANSPORT_MODES.forEach(m => {
     const chip = document.createElement('button');
+    chip.type = 'button';
     chip.className = 'transport-chip' + (m.id === suggested ? ' suggested' : '');
     // ETA affichée uniquement pour la marche, et seulement si raisonnable (< 90 min)
     const eta = (m.id === 'walking' && walkMinutes(dist) <= 90) ? `≈ ${walkMinutes(dist)} min` : '';
-    chip.innerHTML = `<span class="t-icon">${m.icon}</span><span>${m.label}</span><span class="t-eta">${eta || (m.id === suggested ? 'conseillé' : '&nbsp;')}</span>`;
+    const label = modeLabel(m.id, S.lang);
+    chip.innerHTML = `<span class="t-icon">${m.icon}</span><span>${esc(label)}</span><span class="t-eta">${eta || (m.id === suggested ? esc(T('suggested')) : '&nbsp;')}</span>`;
+    chip.setAttribute('aria-label', `${label}${eta ? `, ${eta}` : ''}${m.id === suggested ? `, ${T('suggested')}` : ''}`);
     chip.addEventListener('click', () => {
       window.open(mapsDirUrl(p.lat, p.lng, m.id), '_blank', 'noopener');
     });
@@ -963,18 +1336,25 @@ function buildTransportPanel(){
 // ---------- AUDIO ----------
 function toggleAudio(){
   if (S.speaking){ stopAudio(); return; }
-  if (!S.selectedPoi || !('speechSynthesis' in window)){ showToast('Audio non disponible sur cet appareil'); return; }
+  if (!S.selectedPoi || !('speechSynthesis' in window)){ showToast(T('audio_unavailable')); return; }
   try {
-    const u = new SpeechSynthesisUtterance(S.selectedPoi.name+'. '+S.selectedPoi.story+' Repères historiques : '+S.selectedPoi.dates+' Le saviez-vous ? '+S.selectedPoi.anecdote);
-    u.lang = 'fr-FR'; u.rate = 0.95;
-    const fr = speechSynthesis.getVoices().find(v=>v.lang.startsWith('fr'));
-    if (fr) u.voice = fr;
+    const figures = Array.isArray(S.selectedPoi.figures) && S.selectedPoi.figures.length
+      ? ` ${T('buried_people').replace(/^★\s*/, '')} : ${S.selectedPoi.figures.join(', ')}.`
+      : '';
+    const keyDates = T('key_dates').replace(/^📅\s*/, '');
+    const didYouKnow = T('did_you_know');
+    const u = new SpeechSynthesisUtterance(`${S.selectedPoi.name}. ${S.selectedPoi.story}${figures} ${keyDates} : ${S.selectedPoi.dates} ${didYouKnow} ${S.selectedPoi.anecdote}`);
+    const voiceLanguage = {fr:'fr-FR', en:'en-US', es:'es-ES', de:'de-DE', it:'it-IT', ja:'ja-JP', zh:'zh-CN'}[S.lang] || 'fr-FR';
+    u.lang = voiceLanguage;
+    u.rate = S.lang === 'zh' ? 0.9 : 0.95;
+    const voice = speechSynthesis.getVoices().find(candidate => candidate.lang.toLowerCase().startsWith(S.lang));
+    if (voice) u.voice = voice;
     u.onend = u.onerror = () => { S.speaking = false; S.utterance = null; updateAudioBtn(); };
     S.utterance = u; // référence vivante : évite la coupure par garbage collection (bug Chrome)
     speechSynthesis.cancel();
     speechSynthesis.speak(u);
     S.speaking = true; updateAudioBtn();
-  } catch(e){ showToast('Erreur audio'); }
+  } catch(e){ showToast(T('audio_error')); }
 }
 function stopAudio(){
   if ('speechSynthesis' in window) speechSynthesis.cancel();
@@ -982,8 +1362,64 @@ function stopAudio(){
 }
 function updateAudioBtn(){
   const b = $('btn-audio');
-  b.textContent = S.speaking ? '⏸️ Stop' : '🔊 Écouter';
+  b.textContent = S.speaking ? T('stop') : T('listen');
   b.classList.toggle('playing', S.speaking);
+}
+
+// ---------- À PROPOS & CONFIDENTIALITÉ ----------
+function openInfo(){
+  S.infoReturnFocus = document.activeElement;
+  stopAudio();
+  $('info-modal').removeAttribute('inert');
+  $('info-modal').setAttribute('aria-hidden', 'false');
+  $('app').setAttribute('inert', '');
+  $('app').setAttribute('aria-hidden', 'true');
+  $('info-modal').classList.add('open');
+  syncCamera();
+  requestAnimationFrame(() => $('btn-info-close').focus());
+}
+function closeInfo(){
+  if (!$('info-modal').classList.contains('open')) return;
+  $('info-modal').classList.remove('open');
+  $('info-modal').setAttribute('aria-hidden', 'true');
+  $('info-modal').setAttribute('inert', '');
+  $('app').removeAttribute('inert');
+  $('app').removeAttribute('aria-hidden');
+  syncCamera();
+  const target = S.infoReturnFocus;
+  S.infoReturnFocus = null;
+  if (target && target.isConnected && typeof target.focus === 'function') target.focus();
+}
+function openFlyContact(){
+  if (!isYvelinesDestination(S.selectedPoi)) return;
+  S.flyReturnFocus = document.activeElement;
+  $('fly-contact-modal').removeAttribute('inert');
+  $('fly-contact-modal').setAttribute('aria-hidden', 'false');
+  $('modal').setAttribute('inert', '');
+  $('modal').setAttribute('aria-hidden', 'true');
+  $('fly-contact-modal').classList.add('open');
+  syncCamera();
+  requestAnimationFrame(() => $('fly-contact-close').focus());
+}
+function closeFlyContact(){
+  if (!$('fly-contact-modal').classList.contains('open')) return;
+  $('fly-contact-modal').classList.remove('open');
+  $('fly-contact-modal').setAttribute('aria-hidden', 'true');
+  $('fly-contact-modal').setAttribute('inert', '');
+  $('modal').removeAttribute('inert');
+  $('modal').setAttribute('aria-hidden', 'false');
+  syncCamera();
+  const target = S.flyReturnFocus;
+  S.flyReturnFocus = null;
+  if (target && target.isConnected && typeof target.focus === 'function') target.focus();
+}
+function trapDialogFocus(dialog, e){
+  const focusables = [...dialog.querySelectorAll('button:not([disabled]),a[href],[tabindex]:not([tabindex="-1"])')]
+    .filter(el => el.offsetParent !== null);
+  if (!focusables.length) return;
+  const first = focusables[0], last = focusables[focusables.length - 1];
+  if (e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
+  else if (!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
 }
 
 // ---------- TOAST ----------
@@ -1003,30 +1439,103 @@ $('btn-around').addEventListener('click', centerOnUser);
 $('btn-audio').addEventListener('click', toggleAudio);
 $('btn-close').addEventListener('click', closeModal);
 $('btn-go').addEventListener('click', toggleTransportPanel);
+$('btn-store').addEventListener('click', () => openStore());
+$('buy-paris').addEventListener('click', purchaseFull);
+$('restore-purchases').addEventListener('click', () => refreshStoreStatus({restore:true}));
+$('store-close').addEventListener('click', closeStore);
+$('btn-info').addEventListener('click', openInfo);
+$('btn-info-close').addEventListener('click', closeInfo);
+$('fly-contact-trigger').addEventListener('click', openFlyContact);
+$('fly-contact-close').addEventListener('click', closeFlyContact);
 $('modal').addEventListener('click', e => { if (e.target === $('modal')) closeModal(); });
+$('info-modal').addEventListener('click', e => { if (e.target === $('info-modal')) closeInfo(); });
+$('store-modal').addEventListener('click', e => { if (e.target === $('store-modal')) closeStore(); });
+$('fly-contact-modal').addEventListener('click', e => { if (e.target === $('fly-contact-modal')) closeFlyContact(); });
+document.querySelectorAll('.lang-chip').forEach(chip => chip.addEventListener('click', () => setLanguage(chip.dataset.lang)));
 document.querySelectorAll('.tab').forEach(t => {
   t.addEventListener('click', () => switchTab(t.dataset.tab));
-  t.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); switchTab(t.dataset.tab); } });
+  t.addEventListener('keydown', e => {
+    const tabs = [...document.querySelectorAll('.tab')];
+    const i = tabs.indexOf(t);
+    let next = null;
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') next = tabs[(i + 1) % tabs.length];
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') next = tabs[(i - 1 + tabs.length) % tabs.length];
+    if (e.key === 'Home') next = tabs[0];
+    if (e.key === 'End') next = tabs[tabs.length - 1];
+    if (!next) return;
+    e.preventDefault();
+    switchTab(next.dataset.tab, true);
+  });
+});
+document.addEventListener('keydown', e => {
+  const dialog = $('fly-contact-modal').classList.contains('open') ? $('fly-contact-modal')
+    : ($('store-modal').classList.contains('open') ? $('store-modal')
+    : ($('info-modal').classList.contains('open') ? $('info-modal')
+    : ($('modal').classList.contains('open') ? $('modal') : null)));
+  if (!dialog) return;
+  if (e.key === 'Escape'){
+    e.preventDefault();
+    if (dialog === $('fly-contact-modal')) closeFlyContact();
+    else if (dialog === $('store-modal')) closeStore();
+    else if (dialog === $('info-modal')) closeInfo();
+    else closeModal();
+    return;
+  }
+  if (e.key !== 'Tab') return;
+  trapDialogFocus(dialog, e);
 });
 // Stop l'audio si l'app passe en arrière-plan
 document.addEventListener('visibilitychange', () => {
   if (document.hidden) stopAudio();
+  else if (S.started && isNativeApp) refreshStoreStatus();
   syncCamera();
 });
+applyLanguage();
 
 // ---------- DEMO MODE (desktop sans capteurs) ----------
 // Démarre 3s après le lancement si aucun événement d'orientation réel n'a été reçu.
 // S'arrête définitivement dès qu'un vrai capteur émet (S.realOriSeen, posé dans setHeading).
 let demoAngle = 0, demoTimer = null;
+function isLikelyHandheld(){
+  const coarsePointer = typeof matchMedia === 'function' && matchMedia('(pointer:coarse)').matches;
+  return navigator.maxTouchPoints > 0 || coarsePointer || 'ontouchstart' in window;
+}
 function maybeStartDemo(){
   setTimeout(() => {
     if (S.realOriSeen || demoTimer) return;
+    // Sur un appareil tactile, même avec GPS refusé ou indisponible, une
+    // rotation fictive ressemblerait à une vraie boussole. La démo reste
+    // réservée aux postes non tactiles.
+    if (S.gpsActive || isLikelyHandheld()){ showOriWarning(); return; }
     demoTimer = setInterval(() => {
       if (S.realOriSeen){ clearInterval(demoTimer); demoTimer = null; return; }
       demoAngle = (demoAngle + 0.4) % 360;
       S.heading = demoAngle;
     }, 120);
   }, 3000);
+}
+// Garde tardive : si un GPS réel arrive alors que la démo tourne (fix lent), on la tue
+function stopDemoIfReal(){
+  if (demoTimer && !S.realOriSeen){
+    clearInterval(demoTimer); demoTimer = null;
+    S.heading = 0;
+    S.smoothHeading = 0;
+    showOriWarning();
+  }
+}
+function showOriWarning(){
+  const w = $('ori-warning');
+  if (w && !radarIsOpen()) w.classList.add('visible');
+}
+function hideOriWarning(){
+  const w = $('ori-warning');
+  if (w) w.classList.remove('visible');
+}
+
+function updateRadarHint(){
+  $('radar-hint').textContent = S.realOriSeen
+    ? T('radar_heading')
+    : T('radar_north');
 }
 
 // ---------- MODE PLAN (radar 2D) — core.js : radarPoint / niceRange, testés ----------
@@ -1035,39 +1544,55 @@ function toggleRadar(){
   const open = rv.classList.contains('hidden');
   rv.classList.toggle('hidden', !open);
   $('btn-radar').textContent = open ? '📷' : '🧭';
+  $('btn-radar').setAttribute('aria-label', open ? T('show_camera') : T('show_plan'));
+  $('btn-radar').setAttribute('aria-pressed', open ? 'true' : 'false');
+  if (open) hideOriWarning();
+  else if (S.gpsActive && !S.realOriSeen) showOriWarning();
+  updateRadarHint();
+  syncCamera();
   if (open) renderRadar(true);
 }
 let radarLast = 0;
 function renderRadar(force){
   const rv = $('radar-view');
   if (rv.classList.contains('hidden')) return;
+  // Le SVG est normalement redessiné à 8 fps. Conserver le DOM tant qu'un
+  // lieu a le focus rend la navigation clavier stable.
+  if (!force && document.activeElement && document.activeElement.closest && document.activeElement.closest('#radar-svg')) return;
   const now = performance.now();
   if (!force && now - radarLast < 120) return; // ~8 fps suffisent pour un plan
   radarLast = now;
   const sorted = poisByDist().slice(0, 8);
   if (!sorted.length) return;
   const range = niceRange(sorted[sorted.length - 1].dist);
+  const radarHeading = S.realOriSeen ? S.smoothHeading : 0;
   const C0 = 150, R = 130;
   let svg = '';
   // Anneaux de distance (échelle racine : range/4 → mi-rayon)
-  svg += `<circle cx="${C0}" cy="${C0}" r="${R}" fill="rgba(201,168,76,.03)" stroke="rgba(201,168,76,.35)" stroke-width="1"/>`;
-  svg += `<circle cx="${C0}" cy="${C0}" r="${R/2}" fill="none" stroke="rgba(201,168,76,.2)" stroke-width="1"/>`;
-  svg += `<text x="${C0+3}" y="${C0-R/2-3}" fill="#8a8578" font-size="8">${fmtDist(range/4)}</text>`;
-  svg += `<text x="${C0+3}" y="${C0-R-3}" fill="#8a8578" font-size="8">${fmtDist(range)}</text>`;
+  svg += `<circle cx="${C0}" cy="${C0}" r="${R}" fill="rgba(200,16,46,.05)" stroke="rgba(255,107,125,.46)" stroke-width="1"/>`;
+  svg += `<circle cx="${C0}" cy="${C0}" r="${R/2}" fill="none" stroke="rgba(248,247,242,.24)" stroke-width="1"/>`;
+  svg += `<text x="${C0+3}" y="${C0-R/2-3}" fill="#bdc9df" font-size="8">${fmtDist(range/4)}</text>`;
+  svg += `<text x="${C0+3}" y="${C0-R-3}" fill="#bdc9df" font-size="8">${fmtDist(range)}</text>`;
   // Indicateur Nord sur le bord (tourne avec le cap)
-  const n = radarPoint(0, S.smoothHeading, range, range, R + 9);
+  const n = radarPoint(0, radarHeading, range, range, R + 9);
   svg += `<text x="${(C0+n.x).toFixed(1)}" y="${(C0+n.y+3).toFixed(1)}" fill="var(--gold)" font-size="10" font-weight="700" text-anchor="middle">N</text>`;
   // Vous, au centre (pointe vers le haut = votre direction)
-  svg += `<path d="M${C0} ${C0-7} L${C0-5} ${C0+6} L${C0+5} ${C0+6} Z" fill="var(--gold)"/>`;
+  svg += S.realOriSeen
+    ? `<path d="M${C0} ${C0-7} L${C0-5} ${C0+6} L${C0+5} ${C0+6} Z" fill="var(--gold)"/>`
+    : `<circle cx="${C0}" cy="${C0}" r="5" fill="var(--gold)"/><text x="${C0}" y="${C0+15}" fill="#f8f7f2" font-size="7" text-anchor="middle">${esc(T('you'))}</text>`;
   // Les 8 lieux les plus proches
-  sorted.forEach(p => {
-    const pt = radarPoint(p.bearing, S.smoothHeading, p.dist, range, R);
+  sorted.forEach((p, i) => {
+    const pt = radarPoint(p.bearing, radarHeading, p.dist, range, R);
     const x = (C0 + pt.x).toFixed(1), y = (C0 + pt.y).toFixed(1);
-    svg += `<g data-id="${p.id}" style="cursor:pointer">`;
+    svg += `<g data-id="${p.id}" role="button" tabindex="0" focusable="true" aria-label="${esc(p.name)}, ${fmtDist(p.dist)}" style="cursor:pointer">`;
     svg += `<circle cx="${x}" cy="${y}" r="14" fill="transparent"/>`; // zone de tap large
     svg += `<circle cx="${x}" cy="${y}" r="4" fill="var(--gold)"/>`;
-    svg += `<text x="${x}" y="${y - 8}" fill="#f0ead8" font-size="8.5" text-anchor="middle">${p.icon} ${esc(p.name.length > 22 ? p.name.slice(0, 21) + '…' : p.name)}</text>`;
-    svg += `<text x="${x}" y="${+y + 14}" fill="#8a8578" font-size="7.5" text-anchor="middle">${fmtDist(p.dist)}</text>`;
+    if (i < 4){ // étiquettes complètes pour les 4 plus proches — au-delà, icône seule (anti-chevauchement)
+      svg += `<text x="${x}" y="${y - 8}" fill="#f8f7f2" font-size="8.5" text-anchor="middle">${p.icon} ${esc(p.name.length > 22 ? p.name.slice(0, 21) + '…' : p.name)}</text>`;
+      svg += `<text x="${x}" y="${+y + 14}" fill="#bdc9df" font-size="7.5" text-anchor="middle">${fmtDist(p.dist)}</text>`;
+    } else {
+      svg += `<text x="${x}" y="${y - 7}" font-size="9" text-anchor="middle">${p.icon}</text>`;
+    }
     svg += `</g>`;
   });
   $('radar-svg').innerHTML = svg;
@@ -1075,24 +1600,20 @@ function renderRadar(force){
 $('btn-radar').addEventListener('click', toggleRadar);
 $('btn-nocam').addEventListener('click', declineCamera);
 $('btn-cam-back').addEventListener('click', reenableCamera);
+$('ori-warning').addEventListener('click', () => { if ($('radar-view').classList.contains('hidden')) toggleRadar(); });
 // Délégation : le SVG est redessiné en continu, un listener par élément mourrait aussitôt
 $('radar-svg').addEventListener('click', e => {
   const g = e.target.closest('[data-id]');
   if (g) openPoiById(+g.dataset.id);
 });
-
-// ---------- INSTALLATION PWA (Android : beforeinstallprompt) ----------
-window.addEventListener('beforeinstallprompt', e => {
+$('radar-svg').addEventListener('keydown', e => {
+  if (e.key !== 'Enter' && e.key !== ' ') return;
+  const g = e.target.closest('[data-id]');
+  if (!g) return;
   e.preventDefault();
-  S.installPrompt = e; // proposé une seule fois, après un vrai engagement (voir markVisited)
+  openPoiById(+g.dataset.id);
 });
 
-// ---------- SERVICE WORKER ----------
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js').catch(()=>{});
-  });
-}
 </script>
 </body>
 </html>
